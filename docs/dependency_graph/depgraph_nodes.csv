@@ -228,13 +228,13 @@
 "freeze:prot-ol|qc-norm|log2","qc-norm log2","freeze_file","stage1","prot-ol","auto","prot-ol | 1 file(s) | v2.0 | t02-plasma",18,FALSE,18
 "freeze:prot-ph|da|dream-acute","da dream-acute","freeze_file","stage1","prot-ph","auto","prot-ph | 2 file(s) | v2.1 | t07-adipose, t10-muscle",8,FALSE,24
 "freeze:prot-ph|imputed|log2-mn","imputed log2-mn","freeze_file","stage1","prot-ph","auto","prot-ph | 2 file(s) | v1.2, 2.0 | t07-adipose, t10-muscle",17,FALSE,18
-"freeze:prot-ph|metadata|features","metadata features","freeze_file","stage1","prot-ph","auto","prot-ph | 2 file(s) | v2.0 | t07-adipose, t10-muscle",19,TRUE,18
+"freeze:prot-ph|metadata|features","metadata features","freeze_file","stage1","prot-ph","auto","prot-ph | 2 file(s) | v2.1 | t07-adipose, t10-muscle",19,TRUE,18
 "freeze:prot-ph|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","prot-ph","auto","prot-ph | 1 file(s) | v1.2 | t07-adipose",3,FALSE,18
 "freeze:prot-ph|metadata|samples","metadata samples","freeze_file","stage1","prot-ph","auto","prot-ph | 2 file(s) | v1.2 | t07-adipose, t10-muscle",19,TRUE,18
 "freeze:prot-ph|qc-norm|log2-mn","qc-norm log2-mn","freeze_file","stage1","prot-ph","auto","prot-ph | 2 file(s) | v1.2, 2.0 | t07-adipose, t10-muscle",18,FALSE,18
 "freeze:prot-pr|da|dream-acute","da dream-acute","freeze_file","stage1","prot-pr","auto","prot-pr | 2 file(s) | v2.1 | t07-adipose, t10-muscle",8,FALSE,24
 "freeze:prot-pr|imputed|log2-mn","imputed log2-mn","freeze_file","stage1","prot-pr","auto","prot-pr | 2 file(s) | v1.2, 2.0 | t07-adipose, t10-muscle",17,FALSE,18
-"freeze:prot-pr|metadata|features","metadata features","freeze_file","stage1","prot-pr","auto","prot-pr | 2 file(s) | v2.0 | t07-adipose, t10-muscle",19,TRUE,18
+"freeze:prot-pr|metadata|features","metadata features","freeze_file","stage1","prot-pr","auto","prot-pr | 2 file(s) | v2.1 | t07-adipose, t10-muscle",19,TRUE,18
 "freeze:prot-pr|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","prot-pr","auto","prot-pr | 1 file(s) | v1.2 | t07-adipose",3,FALSE,18
 "freeze:prot-pr|metadata|samples","metadata samples","freeze_file","stage1","prot-pr","auto","prot-pr | 2 file(s) | v1.2 | t07-adipose, t10-muscle",19,TRUE,18
 "freeze:prot-pr|qc-norm|log2-mn","qc-norm log2-mn","freeze_file","stage1","prot-pr","auto","prot-pr | 2 file(s) | v1.2, 2.0 | t07-adipose, t10-muscle",18,FALSE,18

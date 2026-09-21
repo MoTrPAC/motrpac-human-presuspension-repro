@@ -94,10 +94,16 @@ HUMAN_FEATURE_TO_GENE <- dplyr::bind_rows(all_feat_to_gene) %>%
   # the flanking sequence rather than the feature_id: PhosphoSitePlus kinase sets (the PSP
   # database) are defined over flanking sequences. Dropping it here silently reduced step 12
   # to the four non-phospho omes.
-  # confident_site is deliberately NOT carried. It is a per-tissue measurement and this object
-  # is keyed on (assay, feature_id) with no tissue column, so any value here would be a
-  # collapse across tissues rather than the measurement. Read confident_site off
-  # *_PROT_PH_QC$feature_metadata (step 08), which is what step 15 filters PTM-SEA input on.
+  # The prot-ph and prot-pr per-tissue columns are deliberately NOT carried: confident_site,
+  # confident_score, ptm_score and redundant_ids (prot-ph), num_peptides, percent_coverage,
+  # protein_score and redundant_ids (prot-pr). This object is keyed on (assay, feature_id) with
+  # no tissue column, so any value here would be a collapse across tissues rather than the
+  # measurement -- muscle and adipose disagree on 15,825 of 20,664 shared sites for
+  # confident_score, 5,495 of 6,079 shared proteins for num_peptides, and 2,162 / 539 for
+  # redundant_ids. The select() below is a whitelist, so they are dropped by omission; the
+  # duplicate-key guard would fail the build if one ever reached this point. Read them off
+  # *_PROT_PH_QC / *_PROT_PR_QC $feature_metadata (step 08); confident_site is what step 15
+  # filters PTM-SEA input on.
   # any_of("custom_annotation") / any_of("relationship_to_gene"): the two peak-annotation
   # columns .annotate_atac_features() and .annotate_methylcap_features() (step 06) write onto
   # the epigen metadata_features, so they are NA for every non-epigen assay after bind_rows and

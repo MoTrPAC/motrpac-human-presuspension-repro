@@ -93,8 +93,17 @@ qc_files <- freeze[grepl("qc-norm", basename(freeze))]
 # metadata_features requirements resolve by ome prefix, matching upstream's fallback order.
 # Note prot-clinical lands on the prot set and metab-t-clinical on the metab set, which is
 # what upstream does too (expected_columns.R:86-88).
+# prot-ph and prot-pr are checked ahead of the generic ^prot branch: each carries the vendor
+# annotation its own select() keeps, which prot-ol and prot-clinical do not have. Asserted so a
+# future edit to .annotate_prot_ph()/.annotate_prot_pr() cannot silently drop them again.
 features_required_for <- function(ome) {
   if (ome == "transcript-rna-seq") return(c("assay", "feature_id", "gene_symbol", "ensembl_gene"))
+  if (ome == "prot-ph")            return(c("assay", "feature_id", "gene_symbol", "uniprot",
+                                            "flanking_sequence", "confident_site",
+                                            "confident_score", "ptm_score", "redundant_ids"))
+  if (ome == "prot-pr")            return(c("assay", "feature_id", "gene_symbol", "uniprot",
+                                            "num_peptides", "percent_coverage", "protein_score",
+                                            "redundant_ids"))
   if (grepl("^prot", ome))         return(c("assay", "feature_id", "gene_symbol", "uniprot"))
   if (grepl("^metab", ome))        return(c("assay", "feature_id", "refmet_name"))
   if (grepl("^epigen", ome))       return(c("assay", "feature_id", "gene_symbol", "ensembl_gene",

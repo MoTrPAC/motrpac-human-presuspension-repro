@@ -176,7 +176,13 @@ generate_prot_pr_qc_norm = function(repo_local_dir){
     dplyr::full_join(prot_pr, by = c("uniprotswissprot" = "uniprot_lookup")) %>%
     dplyr::mutate(gene_symbol = dplyr::if_else(external_gene_name == "", NA, external_gene_name)) %>%
     dplyr::rename(ensembl_gene = ensembl_gene_id, entrez_gene = entrezgene_id) %>%
-    dplyr::select(assay = platform, feature_id, entrez_gene, gene_symbol, ensembl_gene, uniprot) %>%
+    # num_peptides, percent_coverage, protein_score and redundant_ids are on `rdesc` and were
+    # removed by this select(). The first three are the vendor's identification and coverage
+    # metrics for the protein; redundant_ids is the protein group, which differs from
+    # protein_id for 1,892 of 8,223 adipose and 1,502 of 7,292 muscle rows. All four are per
+    # tissue, so they stop here and at *_PROT_PR_QC; step 07 does not carry them.
+    dplyr::select(assay = platform, feature_id, entrez_gene, gene_symbol, ensembl_gene, uniprot,
+                  num_peptides, percent_coverage, protein_score, redundant_ids) %>%
     dplyr::group_by(feature_id) %>%
     dplyr::slice_min(entrez_gene, n = 1, with_ties = FALSE)
 

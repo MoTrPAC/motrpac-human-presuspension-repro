@@ -181,7 +181,14 @@ generate_prot_ph_qc_norm = function(repo_local_dir){
     # attributes a phosphorylation to the wrong residue. It belongs beside flanking_sequence
     # for the same reason that one is kept: prot-ph-only feature annotation that a downstream
     # step cannot reconstruct from the matrix.
-    dplyr::select(assay = platform, feature_id, entrez_gene, gene_symbol, ensembl_gene, uniprot, flanking_sequence, confident_site) %>%
+    # confident_score, ptm_score and redundant_ids are on `rdesc` too and were removed by this
+    # same select(). confident_score is the localization score confident_site thresholds at 17
+    # (TRUE min 17.005 / FALSE max 16.998 adipose, 17.001 / 16.999 muscle); ptm_score is the
+    # site identification score; redundant_ids is the protein group, which differs from
+    # protein_id for 14,499 of 35,316 adipose and 18,424 of 60,207 muscle rows. All three are
+    # per tissue, so they stop here and at *_PROT_PH_QC; step 07 does not carry them.
+    dplyr::select(assay = platform, feature_id, entrez_gene, gene_symbol, ensembl_gene, uniprot,
+                  flanking_sequence, confident_site, confident_score, ptm_score, redundant_ids) %>%
     dplyr::group_by(feature_id) %>%
     dplyr::slice_min(entrez_gene, n = 1, with_ties = FALSE)
 

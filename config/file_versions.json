@@ -55,8 +55,8 @@
   "version_counts": {
     "1.2": 29,
     "1.3": 79,
-    "2.0": 78,
-    "2.1": 45,
+    "2.0": 74,
+    "2.1": 49,
     "2.2": 1
   },
   "unversioned_files": [],
@@ -399,7 +399,7 @@
           "log2-mn": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
         },
         "metadata": {
-          "features": {"tissue": "t07-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "features": {"tissue": "t07-adipose", "version": "2.1", "ext": "txt", "why_bumped": "gained confident_score, ptm_score and redundant_ids, which .annotate_prot_ph()'s select() dropped; all three are per tissue, so they stop here and at *_PROT_PH_QC and are not carried into the feature-to-gene map"},
           "qc-report": {"tissue": "t07-adipose", "version": "1.2", "ext": "html", "why_bumped": "baseline version; last updated after one subject's BMI was updated"},
           "removed-samples": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"},
           "samples": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
@@ -416,7 +416,7 @@
           "log2-mn": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
         },
         "metadata": {
-          "features": {"tissue": "t07-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "features": {"tissue": "t07-adipose", "version": "2.1", "ext": "txt", "why_bumped": "gained num_peptides, percent_coverage, protein_score and redundant_ids, which .annotate_prot_pr()'s select() dropped; all four are per tissue, so they stop here and at *_PROT_PR_QC and are not carried into the feature-to-gene map"},
           "qc-report": {"tissue": "t07-adipose", "version": "1.2", "ext": "html", "why_bumped": "baseline version; last updated after one subject's BMI was updated"},
           "removed-samples": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"},
           "samples": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
@@ -511,7 +511,7 @@
           "log2-mn": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "updates to prot-pr/ph qc-norm files"}
         },
         "metadata": {
-          "features": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "features": {"tissue": "t10-muscle", "version": "2.1", "ext": "txt", "why_bumped": "gained confident_score, ptm_score and redundant_ids, which .annotate_prot_ph()'s select() dropped; all three are per tissue, so they stop here and at *_PROT_PH_QC and are not carried into the feature-to-gene map"},
           "samples": {"tissue": "t10-muscle", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
         },
         "qc-norm": {
@@ -529,7 +529,7 @@
           "log2-mn": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "updates to prot-pr/ph qc-norm files"}
         },
         "metadata": {
-          "features": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "features": {"tissue": "t10-muscle", "version": "2.1", "ext": "txt", "why_bumped": "gained num_peptides, percent_coverage, protein_score and redundant_ids, which .annotate_prot_pr()'s select() dropped; all four are per tissue, so they stop here and at *_PROT_PR_QC and are not carried into the feature-to-gene map"},
           "samples": {"tissue": "t10-muscle", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
         },
         "qc-norm": {

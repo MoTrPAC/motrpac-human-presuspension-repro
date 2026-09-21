@@ -62,6 +62,18 @@ METADATA_FEATURE_COLS_PROT = c(
   "assay", "feature_id", "gene_symbol", "uniprot"
 )
 
+# prot-ph and prot-pr carry the vendor annotation their own .annotate_*() keeps, on top of the
+# shared prot set. prot-ol and prot-clinical have none of it and stay on the shared set.
+METADATA_FEATURE_COLS_PROT_PH = c(
+  METADATA_FEATURE_COLS_PROT,
+  "flanking_sequence", "confident_site", "confident_score", "ptm_score", "redundant_ids"
+)
+
+METADATA_FEATURE_COLS_PROT_PR = c(
+  METADATA_FEATURE_COLS_PROT,
+  "num_peptides", "percent_coverage", "protein_score", "redundant_ids"
+)
+
 METADATA_FEATURE_COLS_METAB = c(
   "assay", "feature_id", "refmet_name"
 )
@@ -87,6 +99,10 @@ METADATA_FEATURE_COLS_EPIGEN = c(
 #
 # 3. metadata__removed-samples forbids REMOVED_SAMPLES_COLS_IDENTIFYING. Upstream forbids
 #    nothing there.
+#
+# 4. metadata__features__prot-ph and __prot-pr take their own required sets rather than the
+#    shared proteomics one. Upstream gives all four prot omes METADATA_FEATURE_COLS_PROT, which
+#    asserts nothing about the vendor annotation those two files carry from v2.1 on.
 EXPECTED_COLUMNS = list(
 
   # DA schemas
@@ -118,8 +134,8 @@ EXPECTED_COLUMNS = list(
   # removed-samples files use either "vialLabel" or "sample" as the ID column
   "metadata__removed-samples" = list(required = character(0), forbidden = REMOVED_SAMPLES_COLS_IDENTIFYING),
   "metadata__features__transcript-rna-seq" = list(required = METADATA_FEATURE_COLS_TRANSCRIPT, forbidden = character(0)),
-  "metadata__features__prot-pr"            = list(required = METADATA_FEATURE_COLS_PROT,       forbidden = character(0)),
-  "metadata__features__prot-ph"            = list(required = METADATA_FEATURE_COLS_PROT,       forbidden = character(0)),
+  "metadata__features__prot-pr"            = list(required = METADATA_FEATURE_COLS_PROT_PR,    forbidden = character(0)),
+  "metadata__features__prot-ph"            = list(required = METADATA_FEATURE_COLS_PROT_PH,    forbidden = character(0)),
   "metadata__features__prot-ol"            = list(required = METADATA_FEATURE_COLS_PROT,       forbidden = character(0)),
   "metadata__features__prot-clinical"      = list(required = METADATA_FEATURE_COLS_PROT,       forbidden = character(0)),
   "metadata__features__epigen-atac-seq"      = list(required = METADATA_FEATURE_COLS_EPIGEN, forbidden = character(0)),
