@@ -165,6 +165,25 @@ compare_object <- function(new, old) {
       detail <- paste0(detail, "; +", length(gained), " -", length(lost), " names")
       return(list(verdict = "SCHEMA-CHANGE", detail = detail))
     }
+    # A QC object is list(qc_norm, feature_metadata, sample_metadata). Its element names do
+    # not move when a component gains or loses a COLUMN, so comparing names alone reported
+    # VALUES-DIFFER and NEWS -- which reads +cols/-cols off this detail -- said nothing about
+    # the change. Recurse one level into the data-frame components, naming each one so two
+    # components changing differently stay distinguishable.
+    parts <- character(0)
+    for (nm in names(new)) {
+      a <- new[[nm]]; b <- old[[nm]]
+      if (!is.data.frame(a) || !is.data.frame(b)) next
+      g <- setdiff(names(a), names(b)); l <- setdiff(names(b), names(a))
+      if (!length(g) && !length(l)) next
+      part <- nm
+      if (length(g)) part <- paste0(part, ": +cols: ", paste(g, collapse = ","))
+      if (length(l)) part <- paste0(part, ": -cols: ", paste(l, collapse = ","))
+      parts <- c(parts, part)
+    }
+    if (length(parts))
+      return(list(verdict = "SCHEMA-CHANGE",
+                  detail = paste0(detail, "; ", paste(parts, collapse = "; "))))
     return(list(verdict = "VALUES-DIFFER", detail = detail))
   }
 
