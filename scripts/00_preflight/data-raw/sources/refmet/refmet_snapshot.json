@@ -1,0 +1,8 @@
+{
+  "built_on": "2026-08-04",
+  "refmet_endpoint": "https://www.metabolomicsworkbench.org/databases/refmet/name_to_refmet_new_minID.php",
+  "kegg_source": "KEGGREST::keggList(\"compound\")",
+  "refmet_queries": 1700,
+  "refmet_resolved": 1655,
+  "kegg_compounds": 19620
+}

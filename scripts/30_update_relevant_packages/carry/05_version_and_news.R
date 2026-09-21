@@ -1,0 +1,184 @@
+# Stage 3 carry, step 5 — bump both versions and write what changed.
+#
+# The payload change is not additive: every differential-analysis object loses
+# CI.L and CI.R, so downstream code that selects them breaks at the next install,
+# and gains CI.L_calculated and CI.R_calculated in their place. That is a release
+# note, not a silent data refresh, which is why the version moves and NEWS says so
+# in the user-facing section rather than under internals. Both column sets are read
+# off the carry manifest below, not written here, so NEWS follows the data.
+#
+# Usage:
+#   Rscript 05_version_and_news.R --manifest <tsv> --out-root <dir> --out <dir> \
+#     --data-version X --analysis-version Y [--release 2.0] [--date YYYY-MM-DD]
+#
+#   --data-version and --analysis-version are REQUIRED and must each be strictly
+#   ahead of that package's current DESCRIPTION Version. The driver supplies them
+#   from DATA_PKG_VERSION / ANALYSIS_PKG_VERSION in config/pipeline.env.
+
+.here <- local({
+  a <- commandArgs(trailingOnly = FALSE)
+  f <- sub("^--file=", "", a[grepl("^--file=", a)])
+  if (length(f)) dirname(normalizePath(f[1])) else getwd()
+})
+source(file.path(.here, "lib", "carry_helpers.R"))
+
+opt <- parse_opts(commandArgs(trailingOnly = TRUE),
+                  c("manifest", "out-root", "out", "data-version", "analysis-version",
+                    "release", "date", "data-pkg", "analysis-pkg"))
+for (need in c("manifest", "out-root", "out")) {
+  if (is.null(opt[[need]])) stop("missing required option --", need)
+}
+dir.create(opt$out, recursive = TRUE, showWarnings = FALSE)
+rpt <- new_report()
+
+manifest <- read_tsv(opt$manifest)
+release <- if (is.null(opt$release)) "2.0" else opt$release
+today   <- if (is.null(opt$date)) format(Sys.Date()) else opt$date
+
+PKG <- c(data = "MotrpacHumanPreSuspensionData",
+         analysis = "MotrpacHumanPreSuspensionAnalysis")
+root <- function(dest) file.path(opt$`out-root`, PKG[[dest]])
+
+# Both packages went to 2.0.0 first, matching the data collection they distribute.
+#
+# The alternative was to bump each package along its own history — the data
+# package had reached 0.0.1.101 and the analysis package 0.2.4 — but those
+# numbers say nothing about which release of the collection a given install
+# holds, which is the only question anyone asks of these two. Tying the package
+# version to the collection means "I have 2.x installed" and "I am reading the
+# v2.x data" are the same statement.
+#
+# 2.0.0 is NOT hardcoded here any more, and must not be again. The check below
+# requires the requested version to be strictly ahead of the DESCRIPTION this step
+# finds, so a constant is correct exactly once: the packages were promoted to 2.0.2
+# and 2.0.4, and the pinned 2.0.0 then failed the stage on every run. The driver
+# passes --data-version/--analysis-version from DATA_PKG_VERSION and
+# ANALYSIS_PKG_VERSION in config/pipeline.env, which is where the current values and
+# the reason for them live. Absent the flags there is no default worth guessing, so
+# the step stops and says which one to pass.
+# Checked on `opt` and not on the assembled vector: c(data = NULL, analysis = "x")
+# silently DROPS the missing element, so a names() loop would skip exactly the one
+# that is absent and fail later on an out-of-bounds subscript instead of saying which
+# flag to pass.
+for (dest in c("data", "analysis")) {
+  v <- opt[[paste0(dest, "-version")]]
+  if (is.null(v) || !nzchar(v))
+    stop("missing required option --", dest, "-version; set ",
+         toupper(dest), "_PKG_VERSION in config/pipeline.env ",
+         "(it must be strictly ahead of the package's current DESCRIPTION Version)")
+}
+NEW_VERSION <- c(data = opt$`data-version`, analysis = opt$`analysis-version`)
+
+summarise <- function(m) {
+  v <- table(m$verdict)
+  paste(sprintf("%d %s", v, tolower(gsub("-", " ", names(v)))), collapse = ", ")
+}
+
+for (dest in names(PKG)) {
+  p <- root(dest)
+  desc <- read_description(p)
+  if (is.null(desc)) {
+    record(rpt, "FAIL", paste0("version:", PKG[[dest]]), "no DESCRIPTION in the test package")
+    next
+  }
+
+  old_v <- desc$Version
+  new_v <- NEW_VERSION[[dest]]
+  if (identical(old_v, new_v)) {
+    record(rpt, "PASS", paste0("version:", PKG[[dest]]), sprintf("already at %s", new_v))
+  } else if (package_version(new_v) <= package_version(old_v)) {
+    record(rpt, "FAIL", paste0("version:", PKG[[dest]]),
+           sprintf("requested %s is not ahead of the current %s", new_v, old_v))
+    next
+  } else {
+    set_description_field(p, "Version", new_v)
+    set_description_field(p, "Date", today)
+    record(rpt, "PASS", paste0("version:", PKG[[dest]]), sprintf("%s -> %s", old_v, new_v))
+  }
+
+  m <- manifest[manifest$destination == dest, , drop = FALSE]
+  schema <- m[m$verdict == "SCHEMA-CHANGE", , drop = FALSE]
+  added  <- m[m$verdict == "ADDED", , drop = FALSE]
+  gone   <- m[m$verdict == "REMOVED", , drop = FALSE]
+
+  entry <- c(
+    sprintf("# %s %s", PKG[[dest]], new_v),
+    "",
+    sprintf("Data objects regenerated by the motrpac-human-presuspension-repro pipeline for the v%s release.", release),
+    "")
+
+  if (nrow(added)) {
+    entry <- c(entry, "## New data", "",
+      sprintf("- %s", paste(sort(added$object), collapse = ", ")),
+      "",
+      "  Clinical chemistry, one assay in v1.3, is split into a metabolomics and a proteomics assay.",
+      "")
+  }
+
+  if (nrow(gone)) {
+    entry <- c(entry, "## Removed data", "",
+      sprintf("- `%s` — %s.", gone$object, gone$detail),
+      "")
+  }
+
+  if (nrow(schema)) {
+    # The detail field lists several columns in one comma-separated run, so split
+    # before formatting or they render as a single backticked blob.
+    split_cols <- function(x) unique(trimws(unlist(strsplit(x, ",", fixed = TRUE))))
+    lost <- split_cols(unlist(regmatches(schema$detail,
+              gregexpr("(?<=-cols: )[^;]+", schema$detail, perl = TRUE))))
+    gained <- split_cols(unlist(regmatches(schema$detail,
+              gregexpr("(?<=\\+cols: )[^;]+", schema$detail, perl = TRUE))))
+    plural <- function(x) if (length(x) > 1L) "columns" else "column"
+    entry <- c(entry, "## Breaking changes to data objects", "")
+    if (length(lost)) {
+      entry <- c(entry,
+        sprintf("- %d objects drop the `%s` %s; code that selects them will error: %s.",
+                sum(grepl("-cols", schema$detail)), paste(lost, collapse = "`, `"), plural(lost),
+                paste(sort(schema$object[grepl("-cols", schema$detail)]), collapse = ", ")),
+        "")
+    }
+    if (length(gained)) {
+      entry <- c(entry,
+        sprintf("- %s gains the `%s` %s.",
+                paste(sort(schema$object[grepl("\\+cols", schema$detail)]), collapse = ", "),
+                paste(gained, collapse = "`, `"), plural(gained)),
+        "")
+    }
+    # A QC object is a named list, not a data frame, so a dropped component shows
+    # up as a shorter list rather than as a missing column. It is just as breaking.
+    shrank <- schema[grepl("^list ", schema$detail) & grepl("-1 names|-[0-9]+ names", schema$detail), ]
+    if (nrow(shrank)) {
+      entry <- c(entry,
+        sprintf("- %d QC objects drop `qc_imputed`: %s. `load_qc()` already guards for it, and `run_SCION()` — its only other reader — is withdrawn from this package; SCION inference reads the imputed matrix from the freeze instead.",
+                nrow(shrank), paste(sort(shrank$object), collapse = ", ")),
+        "")
+    }
+  }
+
+  entry <- c(entry, "## Provenance", "",
+    sprintf(paste0("- `inst/PROVENANCE.tsv` records each object as regenerated, staged ",
+                   "verbatim, or carried forward. This payload: %s."), summarise(m)),
+    "")
+
+  # Restore NEWS.md from the source checkout first, so re-running this step
+  # rewrites its entry rather than finding its own heading and declining to
+  # touch it — the same posture step 4 takes toward the R files it edits.
+  news <- file.path(p, "NEWS.md")
+  src_news <- if (is.null(opt[[paste0(dest, "-pkg")]])) NULL else
+    file.path(opt[[paste0(dest, "-pkg")]], "NEWS.md")
+  if (!is.null(src_news) && file.exists(src_news)) file.copy(src_news, news, overwrite = TRUE)
+
+  old_news <- if (file.exists(news)) readLines(news, warn = FALSE) else character()
+  if (any(grepl(paste0("^# ", PKG[[dest]], " ", new_v, "$"), old_news))) {
+    record(rpt, "PASS", paste0("news:", PKG[[dest]]), "entry already present")
+  } else {
+    writeLines(c(entry, old_news), news)
+    record(rpt, "PASS", paste0("news:", PKG[[dest]]),
+           sprintf("%d line(s) prepended to NEWS.md", length(entry)))
+  }
+}
+
+write_tsv(report_frame(rpt), file.path(opt$out, "version_report.tsv"))
+message(sprintf("\n%d check(s): %d FAIL, %d WARN", length(rpt$rows), rpt$fails, rpt$warns))
+if (rpt$fails > 0L) quit(status = 1L)

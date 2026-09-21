@@ -1,0 +1,8 @@
+gmt_file	source_file	download_url	builder_script	license_note
+c2.all.v2023.2.Hs.symbols.gmt.gz	(downloaded pre-built)	https://www.gsea-msigdb.org/gsea/msigdb	(none — used directly)	MSigDB C2 v2023.2; free account/login required
+c5.go.v2023.2.Hs.symbols.gmt.gz	(downloaded pre-built)	https://www.gsea-msigdb.org/gsea/msigdb	(none — used directly)	MSigDB C5/GO v2023.2; free account/login required
+mitocarta3.0.symbols.gmt.gz	Human.MitoCarta3.0.xls	https://www.broadinstitute.org/mitocarta/mitocarta30-inventory-mammalian-mitochondrial-proteins-and-pathways	gmt_processing/GMT_MitoCarta.R	free; cite Broad MitoCarta3.0
+phosphositeplus.v6.7.1.1.flanking.gmt.gz	Kinase_Substrate_Dataset.gz	https://www.phosphosite.org/staticDownloads.action	gmt_processing/GMT_PSP_kinase.R	PhosphoSitePlus — non-commercial use only; registration required
+metabolomics.workbench.refmet.2024.08.07.metabolites.gmt.gz	(RefMet API query)	https://www.metabolomicsworkbench.org/databases/refmet/name_to_refmetF_form.php	gmt_processing/GMT_RefMet_subclass.R	free; live query stamped 2024-08-07
+ptmsigdb.v2.0.flanking.gmt.gz	ptm.sig.db.all.flanking.human.v2.0.0.gmt.gz	https://proteomics.broadapps.org/ptmsigdb/	gmt_processing/GMT_PTMSigDB.R	free; PTMsigDB v2.0
+cellmarker.v2024.symbols.gmt.gz	CellMarker_2024.txt.gz	https://maayanlab.cloud/Enrichr/#libraries	gmt_processing/GMT_CellMarker.R	free; via Enrichr, downloaded 2025-01-23

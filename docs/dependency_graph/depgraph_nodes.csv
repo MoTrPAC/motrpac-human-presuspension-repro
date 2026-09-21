@@ -1,0 +1,490 @@
+"id","label","type","stage","ome","origin","detail","n_downstream","hotspot","level"
+"make:all","make all","make_target","orchestration","shared","auto","fresh clone to upload: preflight, sources, data objects, data, packages, upload plan",0,FALSE,3
+"make:precheck","make precheck","make_target","orchestration","shared","auto","warn if existing outputs would be overwritten (delete freeze folder to regen from scratch)",0,FALSE,0
+"make:preflight","make preflight","make_target","orchestration","shared","auto","Stage 0 — permissions + external-asset checks",0,FALSE,0
+"make:data-objects","make data-objects","make_target","orchestration","shared","auto","Stage 0 — build the leaf (deps=-) data objects from vendored sources",0,FALSE,0
+"make:data","make data","make_target","orchestration","shared","auto","Stage 1 — regenerate data objects (EXECUTOR=slurm to submit each step)",0,FALSE,1
+"make:upload","make upload","make_target","orchestration","shared","auto","Stage 2 — snapshot, diff and plan the bucket upload (APPLY=1 to write; no promote)",0,FALSE,2
+"make:update-relevant-packages","make update-relevant-packages","make_target","orchestration","shared","auto","Stage 3 — audit the data + analysis packages, then plan the carry (writes nothing outside logs/)",0,FALSE,2
+"make:promote","make promote","make_target","orchestration","shared","auto","gated: promote staging -> production (manual)",0,FALSE,3
+"make:slurm","make slurm","make_target","orchestration","shared","auto","submit the whole chain to SLURM and return (DRY_RUN=1, STAGES=""data upload"")",0,FALSE,0
+"make:slurm-status","make slurm-status","make_target","orchestration","shared","auto","squeue + sacct for the chain last submitted",0,FALSE,0
+"make:slurm-cancel","make slurm-cancel","make_target","orchestration","shared","auto","scancel every job in the chain last submitted",0,FALSE,0
+"make:sources","make sources","make_target","orchestration","shared","auto","fetch/build the staged inputs too big for git (DRY_RUN=1, FORCE=1, GROUPS=)",0,FALSE,0
+"make:env","make env","make_target","orchestration","shared","auto","record OS, run date, tool + R package versions to docs/ENVIRONMENT.md",0,FALSE,0
+"make:env-diff","make env-diff","make_target","orchestration","shared","auto","compare THIS machine's R library against docs/environment/package_versions.tsv",0,FALSE,0
+"make:depgraph","make depgraph","make_target","orchestration","shared","auto","redraw the pipeline dependency graph -> docs/dependency_graph/",0,FALSE,0
+"make:docker-build","make docker-build","make_target","orchestration","shared","auto","build the image (PLATFORM=linux/amd64 for the fast binary build)",0,FALSE,0
+"make:docker-shell","make docker-shell","make_target","orchestration","shared","auto","interactive shell inside the container",0,FALSE,0
+"make:docker-preflight","make docker-preflight","make_target","orchestration","shared","auto","run Stage 0 inside the container",0,FALSE,0
+"make:docker-verify","make docker-verify","make_target","orchestration","shared","auto","write docs/environment/docker_diff.tsv + docs/DOCKER_DIFF.md from the image",0,FALSE,0
+"make:docker-reinstall","make docker-reinstall","make_target","orchestration","shared","auto","force-reinstall the mounted source packages (only if you enabled those mounts)",0,FALSE,0
+"make:clean","make clean","make_target","orchestration","shared","auto","remove stamps and logs",0,FALSE,0
+"sh:scripts/check_existing_outputs.sh","check_existing_outputs.sh","stage_driver","orchestration","shared","auto","run by make precheck",0,FALSE,3
+"sh:scripts/00_preflight/00_preflight.sh","00_preflight.sh","stage_driver","stage0","shared","auto","run by make preflight",0,FALSE,3
+"sh:scripts/00_preflight/data-raw/build_data_objects.sh","build_data_objects.sh","stage_driver","stage0","shared","auto","run by make data-objects",23,TRUE,3
+"sh:scripts/10_build_data/10_build_data.sh","10_build_data.sh","stage_driver","stage1","shared","auto","run by make data",0,FALSE,9
+"sh:scripts/20_upload_bucket/20_upload_bucket.sh","20_upload_bucket.sh","stage_driver","stage2","shared","auto","run by make upload",2,FALSE,25
+"sh:scripts/30_update_relevant_packages/30_update_relevant_packages.sh","30_update_relevant_packages.sh","stage_driver","stage3","shared","auto","run by make update-relevant-packages",2,FALSE,38
+"sh:scripts/submit_slurm.sh","submit_slurm.sh","stage_driver","orchestration","shared","auto","run by make slurm",0,FALSE,3
+"sh:config/copy_from_source.sh","copy_from_source.sh","stage_driver","orchestration","shared","auto","run by make sources",0,FALSE,3
+"sh:config/capture_environment.sh","capture_environment.sh","stage_driver","orchestration","shared","auto","run by make env",0,FALSE,3
+"sh:docker/verify_environment.R","verify_environment.R","stage_driver","orchestration","shared","auto","run by make env-diff",0,FALSE,3
+"sh:docs/dependency_graph/build_depgraph.R","build_depgraph.R","stage_driver","orchestration","shared","auto","run by make depgraph",0,FALSE,3
+"step:01_stage_clinical","01_stage_clinical","step","stage1","shared","auto","",5,FALSE,10
+"test:01_stage_clinical/clinical_staging_tests","clinical_staging_tests","test_script","stage1","shared","auto","",0,FALSE,11
+"src:DATA_PKG_REPO","MotrpacHumanPreSuspensionData","source","external","shared","auto","sibling package checkout — objects staged verbatim",7,FALSE,0
+"step:02_stage_pheno","02_stage_pheno","step","stage1","shared","auto","",4,FALSE,10
+"test:02_stage_pheno/pheno_tests","pheno_tests","test_script","stage1","shared","auto","",0,FALSE,11
+"step:03_build_molecular_signatures","03_build_molecular_signatures","step","stage1","shared","auto","",7,FALSE,10
+"stem:03_build_molecular_signatures/MOLECULAR_SIGNATURES","MOLECULAR_SIGNATURES","stem","stage1","shared","auto","",0,FALSE,11
+"test:03_build_molecular_signatures/molecular_signatures_tests","molecular_signatures_tests","test_script","stage1","shared","auto","",0,FALSE,11
+"step:04_build_set_to_id","04_build_set_to_id","step","stage1","shared","auto","",5,FALSE,12
+"stem:04_build_set_to_id/SET_TO_ID","SET_TO_ID","stem","stage1","shared","auto","",0,FALSE,13
+"test:04_build_set_to_id/set_to_id_tests","set_to_id_tests","test_script","stage1","shared","auto","",0,FALSE,13
+"step:05_stage_metabolomics_cvs","05_stage_metabolomics_cvs","step","stage1","shared","auto","",13,FALSE,14
+"stem:05_stage_metabolomics_cvs/METABOLOMICS_CVS_resource","METABOLOMICS_CVS_resource","stem","stage1","shared","auto","",4,FALSE,15
+"test:05_stage_metabolomics_cvs/metabolomics_cvs_tests","metabolomics_cvs_tests","test_script","stage1","shared","auto","",0,FALSE,15
+"src:vendored/05_stage_metabolomics_cvs","05_stage_metabolomics_cvs/sources","source","external","shared","auto","vendored raw source under the step's sources/",14,FALSE,0
+"step:06_generate_qc_norm","06_generate_qc_norm","step","stage1","shared","auto","",0,FALSE,16
+"stem:06_generate_qc_norm/stage_removed_samples","stage_removed_samples","stem","stage1","shared","auto","",19,TRUE,17
+"stem:06_generate_qc_norm/stage_ensembl_txdb","stage_ensembl_txdb","stem","stage1","shared","auto","",4,FALSE,17
+"stem:06_generate_qc_norm/stage_refmet_map","stage_refmet_map","stem","stage1","shared","auto","",5,FALSE,17
+"stem:06_generate_qc_norm/generate_prot_ol_qc_norm","generate_prot_ol_qc_norm","stem","stage1","prot-ol","auto","prot-ol",22,TRUE,17
+"stem:06_generate_qc_norm/generate_prot_pr_qc_norm","generate_prot_pr_qc_norm","stem","stage1","prot-pr","auto","prot-pr",22,TRUE,17
+"stem:06_generate_qc_norm/generate_prot_ph_qc_norm","generate_prot_ph_qc_norm","stem","stage1","prot-ph","auto","prot-ph",22,TRUE,17
+"stem:06_generate_qc_norm/generate_transcriptomics_qc_norm","generate_transcriptomics_qc_norm","stem","stage1","transcript-rna-seq","auto","transcript-rna-seq",22,TRUE,17
+"stem:06_generate_qc_norm/generate_atac_qc_norm","generate_atac_qc_norm","stem","stage1","epigen-atac-seq","auto","epigen-atac-seq",22,TRUE,17
+"stem:06_generate_qc_norm/generate_methylcap_qc_norm","generate_methylcap_qc_norm","stem","stage1","epigen-methylcap-seq","auto","epigen-methylcap-seq",22,TRUE,17
+"stem:06_generate_qc_norm/generate_metab_qc_norm","generate_metab_qc_norm","stem","stage1","shared","auto","",61,TRUE,17
+"stem:06_generate_qc_norm/generate_clinical_qc_norm","generate_clinical_qc_norm","stem","stage1","shared","auto","metab-t-clinical, prot-clinical",25,TRUE,17
+"stem:06_generate_qc_norm/generate_prot_pr_imputed","generate_prot_pr_imputed","stem","stage1","prot-pr","auto","prot-pr",18,FALSE,17
+"stem:06_generate_qc_norm/generate_prot_ph_imputed","generate_prot_ph_imputed","stem","stage1","prot-ph","auto","prot-ph",18,FALSE,17
+"step:07_build_human_feature_to_gene","07_build_human_feature_to_gene","step","stage1","shared","auto","",13,FALSE,19
+"stem:07_build_human_feature_to_gene/HUMAN_FEATURE_TO_GENE","HUMAN_FEATURE_TO_GENE","stem","stage1","shared","auto","",4,FALSE,20
+"test:07_build_human_feature_to_gene/feature_to_gene_tests","feature_to_gene_tests","test_script","stage1","shared","auto","",0,FALSE,20
+"step:08_build_qc_objects","08_build_qc_objects","step","stage1","shared","auto","",13,FALSE,20
+"stem:08_build_qc_objects/qc_norm_results","qc_norm_results","stem","stage1","transcript-rna-seq","auto","transcript-rna-seq",0,FALSE,21
+"test:08_build_qc_objects/qc_object_tests","qc_object_tests","test_script","stage1","shared","auto","",0,FALSE,21
+"step:09_build_da","09_build_da","step","stage1","shared","auto","",9,FALSE,22
+"stem:09_build_da/generate_prot_ol_da","generate_prot_ol_da","stem","stage1","prot-ol","auto","prot-ol",9,FALSE,23
+"stem:09_build_da/generate_prot_pr_da","generate_prot_pr_da","stem","stage1","prot-pr","auto","prot-pr",9,FALSE,23
+"stem:09_build_da/generate_prot_ph_da","generate_prot_ph_da","stem","stage1","prot-ph","auto","prot-ph",9,FALSE,23
+"stem:09_build_da/generate_clinical_da","generate_clinical_da","stem","stage1","shared","auto","metab-t-clinical, prot-clinical",10,FALSE,23
+"stem:09_build_da/generate_metab_da","generate_metab_da","stem","stage1","metab-t-clinical","auto","metab-t-clinical",22,TRUE,23
+"stem:09_build_da/generate_transcriptomics_da","generate_transcriptomics_da","stem","stage1","transcript-rna-seq","auto","transcript-rna-seq",9,FALSE,23
+"stem:09_build_da/generate_atac_da","generate_atac_da","stem","stage1","epigen-atac-seq","auto","epigen-atac-seq",9,FALSE,23
+"stem:09_build_da/generate_methylcap_da","generate_methylcap_da","stem","stage1","epigen-methylcap-seq","auto","epigen-methylcap-seq",9,FALSE,23
+"src:vendored/09_build_da","09_build_da/sources","source","external","shared","auto","vendored raw source under the step's sources/",10,FALSE,0
+"step:10_build_da_assemble","10_build_da_assemble","step","stage1","shared","auto","",8,FALSE,24
+"stem:10_build_da_assemble/differential_analysis_results","differential_analysis_results","stem","stage1","shared","auto","metab-t-clinical, transcript-rna-seq",0,FALSE,25
+"test:10_build_da_assemble/da_assemble_tests","da_assemble_tests","test_script","stage1","shared","auto","",0,FALSE,25
+"src:vendored/10_build_da_assemble","10_build_da_assemble/sources","source","external","shared","auto","vendored raw source under the step's sources/",9,FALSE,0
+"step:11_build_sum_stats","11_build_sum_stats","step","stage1","shared","auto","",4,FALSE,26
+"stem:11_build_sum_stats/all_group_stats","all_group_stats","stem","stage1","metab-t-clinical","auto","metab-t-clinical",0,FALSE,27
+"test:11_build_sum_stats/sum_stats_tests","sum_stats_tests","test_script","stage1","shared","auto","",0,FALSE,27
+"step:12_build_camera_results","12_build_camera_results","step","stage1","shared","auto","",4,FALSE,28
+"stem:12_build_camera_results/CAMERA_RESULTS","CAMERA_RESULTS","stem","stage1","shared","auto","",0,FALSE,29
+"test:12_build_camera_results/camera_tests","camera_tests","test_script","stage1","shared","auto","",0,FALSE,29
+"step:13_build_fcm","13_build_fcm","step","stage1","shared","auto","",4,FALSE,30
+"stem:13_build_fcm/FCM_clustering_results","FCM_clustering_results","stem","stage1","shared","auto","",0,FALSE,31
+"stem:13_build_fcm/fcm_diagnostics","fcm_diagnostics","stem","stage1","shared","auto","",0,FALSE,31
+"test:13_build_fcm/fcm_tests","fcm_tests","test_script","stage1","shared","auto","",0,FALSE,31
+"step:14_build_utoronto_tfs","14_build_utoronto_tfs","step","stage1","shared","auto","",4,FALSE,32
+"stem:14_build_utoronto_tfs/UTORONTO_TFs","UTORONTO_TFs","stem","stage1","prot-ph","auto","prot-ph",0,FALSE,33
+"test:14_build_utoronto_tfs/utoronto_tests","utoronto_tests","test_script","stage1","shared","auto","",0,FALSE,33
+"src:vendored/14_build_utoronto_tfs","14_build_utoronto_tfs/sources","source","external","shared","auto","vendored raw source under the step's sources/",5,FALSE,0
+"step:15_build_ptmsea_input","15_build_ptmsea_input","step","stage1","shared","auto","",4,FALSE,34
+"stem:15_build_ptmsea_input/PTMSEA_INPUT","PTMSEA_INPUT","stem","stage1","shared","auto","",0,FALSE,35
+"test:15_build_ptmsea_input/ptmsea_tests","ptmsea_tests","test_script","stage1","shared","auto","",0,FALSE,35
+"step:16_build_scion","16_build_scion","step","stage1","shared","auto","adapted; on by default (exit 77 SKIP when opted out)",0,FALSE,36
+"stem:16_build_scion/SCION_NETWORKS","SCION_NETWORKS","stem","stage1","shared","auto","",0,FALSE,37
+"test:16_build_scion/scion_tests","scion_tests","test_script","stage1","shared","auto","",0,FALSE,37
+"test:06_generate_qc_norm/qc_norm_freeze_tests","qc_norm_freeze_tests","test_script","stage1","shared","auto","",0,FALSE,17
+"test:09_build_da/da_tests","da_tests","test_script","stage1","shared","auto","",0,FALSE,23
+"pf:COLORS_ABBREVIATIONS.R","COLORS_ABBREVIATIONS.R","preflight_builder","stage0","shared","auto","",4,FALSE,4
+"pf:COVARIATES_FILE.R","COVARIATES_FILE.R","preflight_builder","stage0","shared","auto","",7,FALSE,4
+"pf:QUANTID_BUCKET_FILES.R","QUANTID_BUCKET_FILES.R","preflight_builder","stage0","shared","auto","",0,FALSE,4
+"pf:OME_TISSUE_CODE.R","OME_TISSUE_CODE.R","preflight_builder","stage0","shared","auto","",0,FALSE,4
+"pf:gmt_processing/GMT_CellMarker.R","GMT_CellMarker.R","preflight_builder","stage0","shared","auto","",9,FALSE,4
+"pf:gmt_processing/GMT_MitoCarta.R","GMT_MitoCarta.R","preflight_builder","stage0","shared","auto","",9,FALSE,4
+"pf:gmt_processing/GMT_PSP_kinase.R","GMT_PSP_kinase.R","preflight_builder","stage0","shared","auto","",9,FALSE,4
+"pf:gmt_processing/GMT_PTMSigDB.R","GMT_PTMSigDB.R","preflight_builder","stage0","shared","auto","",9,FALSE,4
+"pf:gmt_processing/GMT_RefMet_subclass.R","GMT_RefMet_subclass.R","preflight_builder","stage0","shared","auto","",9,FALSE,4
+"pf:OUTLIERS.R","OUTLIERS.R","preflight_builder","stage0","shared","auto","",7,FALSE,4
+"pf:SPLICING_DA.R","SPLICING_DA.R","preflight_builder","stage0","shared","auto","",4,FALSE,4
+"pfout:c2.all.v2023.2.Hs.symbols.gmt.gz","c2.all.v2023.2.Hs.symbols.gmt.gz","preflight_object","stage0","shared","vendored","download-only GMT, vendored prebuilt and copied verbatim",8,FALSE,4
+"pfout:c5.go.v2023.2.Hs.symbols.gmt.gz","c5.go.v2023.2.Hs.symbols.gmt.gz","preflight_object","stage0","shared","vendored","download-only GMT, vendored prebuilt and copied verbatim",8,FALSE,4
+"obj:CAMERA_RESULTS","CAMERA_RESULTS","data_object","stage1","shared","yes","1 object(s) | generator CAMERA_RESULTS.R | analysis pkg | regenerated: yes",3,FALSE,39
+"obj:COLORS_ABBREVIATIONS","COLORS_ABBREVIATIONS","data_object","stage0","shared","yes","6 object(s) | generator COLORS_ABBREVIATIONS.R | analysis pkg | regenerated: yes",3,FALSE,6
+"obj:COVARIATES_FILE","COVARIATES_FILE","data_object","stage0","shared","yes","1 object(s) | generator COVARIATES_FILE.R | analysis pkg | regenerated: yes",6,FALSE,6
+"obj:DA","DA","data_object","stage1","shared","not_yet","1 object(s) | generator generate_differential_analysis/generate_DA_inputs.R | analysis pkg | regenerated: not_yet",8,FALSE,40
+"obj:DA_ASSEMBLE","DA_ASSEMBLE","data_object","stage1","shared","yes","19 object(s) | generator differential_analysis_results.R | analysis pkg | regenerated: yes",7,FALSE,38
+"obj:FCM","FCM","data_object","stage1","shared","yes","3 object(s) | generator FCM_clustering_results.R | analysis pkg | regenerated: yes",3,FALSE,39
+"obj:HUMAN_FEATURE_TO_GENE","HUMAN_FEATURE_TO_GENE","data_object","stage1","shared","yes","1 object(s) | generator HUMAN_FEATURE_TO_GENE.R | analysis pkg | regenerated: yes",12,FALSE,40
+"obj:METABOLOMICS_CVS","METABOLOMICS_CVS","data_object","stage1","shared","not_yet","1 object(s) | generator METABOLOMICS_CVS.R | analysis pkg | regenerated: not_yet",12,FALSE,38
+"obj:MOLECULAR_SIGNATURES","MOLECULAR_SIGNATURES","data_object","stage1","shared","yes","1 object(s) | generator MOLECULAR_SIGNATURES.R | analysis pkg | regenerated: yes",6,FALSE,11
+"obj:OME_TISSUE_CODE","OME_TISSUE_CODE","data_object","stage0","shared","yes","1 object(s) | generator ome_tissue_object.R | analysis pkg | regenerated: yes",16,FALSE,6
+"obj:OUTLIERS","OUTLIERS","data_object","stage0","shared","yes","1 object(s) | generator OUTLIERS.R | analysis pkg | regenerated: yes",6,FALSE,6
+"obj:PTMSEA_INPUT","PTMSEA_INPUT","data_object","stage1","shared","yes","1 object(s) | generator preprocess_PTMSEA.R | analysis pkg | regenerated: yes",3,FALSE,39
+"obj:QC_NORM","QC_NORM","data_object","stage1","shared","yes","47 object(s) | generator generate_normalized_expression/generate_qc_norm.R | bucket pkg | regenerated: yes",12,FALSE,39
+"obj:SET_TO_ID","SET_TO_ID","data_object","stage1","shared","yes","1 object(s) | generator SET_TO_ID.R | analysis pkg | regenerated: yes",4,FALSE,13
+"obj:SPLICING_DA","SPLICING_DA","data_object","stage0","shared","yes","1 object(s) | generator SPLICING_DA.R | analysis pkg | regenerated: yes",3,FALSE,6
+"obj:SUM_STATS","SUM_STATS","data_object","stage1","shared","yes","18 object(s) | generator all_group_stats.R | analysis pkg | regenerated: yes",3,FALSE,39
+"obj:UTORONTO_TFs","UTORONTO_TFs","data_object","stage1","shared","yes","1 object(s) | generator UTORONTO_TFs.R | analysis pkg | regenerated: yes",3,FALSE,38
+"obj:cln_objects","cln_objects","data_object","stage1","shared","not_yet","76 object(s) | generator clinic.R | data pkg | regenerated: not_yet",4,FALSE,11
+"obj:gmt_files","gmt_files","data_object","stage0","shared","yes","1 object(s) | generator gmt_processing/* | analysis pkg | regenerated: yes",7,FALSE,6
+"obj:pheno","pheno","data_object","stage1","shared","not_yet","1 object(s) | generator pheno.R | data pkg | regenerated: not_yet",3,FALSE,12
+"src:upstream/CONTRAST_CONVERTER","CONTRAST_CONVERTER","source","external","shared","auto","upstream generator, not adapted into this repo",4,FALSE,0
+"src:upstream/clinic_download.R","clinic_download.R","source","external","shared","auto","upstream generator, not adapted into this repo",5,FALSE,0
+"freeze:epigen-atac-seq|da|dream-acute","da dream-acute","freeze_file","stage1","epigen-atac-seq","auto","epigen-atac-seq | 2 file(s) | v2.1 | t05-pbmc, t06-muscle",8,FALSE,24
+"freeze:epigen-atac-seq|metadata|features","metadata features","freeze_file","stage1","epigen-atac-seq","auto","epigen-atac-seq | 2 file(s) | v2.0 | t05-pbmc, t06-muscle",19,TRUE,18
+"freeze:epigen-atac-seq|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","epigen-atac-seq","auto","epigen-atac-seq | 2 file(s) | v2.0 | t05-pbmc, t06-muscle",3,FALSE,18
+"freeze:epigen-atac-seq|metadata|samples","metadata samples","freeze_file","stage1","epigen-atac-seq","auto","epigen-atac-seq | 2 file(s) | v2.0 | t05-pbmc, t06-muscle",19,TRUE,18
+"freeze:epigen-atac-seq|qc-norm|log-cpm","qc-norm log-cpm","freeze_file","stage1","epigen-atac-seq","auto","epigen-atac-seq | 2 file(s) | v2.0 | t05-pbmc, t06-muscle",18,FALSE,18
+"freeze:epigen-methylcap-seq|da|malax-glmm-acute","da malax-glmm-acute","freeze_file","stage1","epigen-methylcap-seq","auto","epigen-methylcap-seq | 3 file(s) | v1.2 | t03-edta, t06-muscle, t11-adipose",8,FALSE,24
+"freeze:epigen-methylcap-seq|metadata|features","metadata features","freeze_file","stage1","epigen-methylcap-seq","auto","epigen-methylcap-seq | 3 file(s) | v2.0 | t03-edta, t06-muscle, t11-adipose",19,TRUE,18
+"freeze:epigen-methylcap-seq|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","epigen-methylcap-seq","auto","epigen-methylcap-seq | 1 file(s) | v2.0 | t03-edta",3,FALSE,18
+"freeze:epigen-methylcap-seq|metadata|samples","metadata samples","freeze_file","stage1","epigen-methylcap-seq","auto","epigen-methylcap-seq | 3 file(s) | v2.0 | t03-edta, t06-muscle, t11-adipose",19,TRUE,18
+"freeze:epigen-methylcap-seq|qc-norm|beta-values","qc-norm beta-values","freeze_file","stage1","epigen-methylcap-seq","auto","epigen-methylcap-seq | 3 file(s) | v1.2 | t03-edta, t06-muscle, t11-adipose",18,FALSE,18
+"freeze:metab-t-acoa|da|dream-acute","da dream-acute","freeze_file","stage1","metab-t-acoa","auto","metab-t-acoa | 1 file(s) | v2.1 | t11-adipose",8,FALSE,24
+"freeze:metab-t-acoa|metadata|features","metadata features","freeze_file","stage1","metab-t-acoa","auto","metab-t-acoa | 1 file(s) | v2.0 | t11-adipose",19,TRUE,18
+"freeze:metab-t-acoa|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","metab-t-acoa","auto","metab-t-acoa | 1 file(s) | v1.3 | t11-adipose",3,FALSE,18
+"freeze:metab-t-acoa|metadata|samples","metadata samples","freeze_file","stage1","metab-t-acoa","auto","metab-t-acoa | 1 file(s) | v1.3 | t11-adipose",19,TRUE,18
+"freeze:metab-t-acoa|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-t-acoa","auto","metab-t-acoa | 1 file(s) | v1.3 | t11-adipose",18,FALSE,18
+"freeze:metab-t-amines|da|dream-acute","da dream-acute","freeze_file","stage1","metab-t-amines","auto","metab-t-amines | 3 file(s) | v2.1 | t02-plasma, t10-muscle, t11-adipose",8,FALSE,24
+"freeze:metab-t-amines|metadata|features","metadata features","freeze_file","stage1","metab-t-amines","auto","metab-t-amines | 3 file(s) | v2.0 | t02-plasma, t10-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-t-amines|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","metab-t-amines","auto","metab-t-amines | 1 file(s) | v1.3 | t11-adipose",3,FALSE,18
+"freeze:metab-t-amines|metadata|samples","metadata samples","freeze_file","stage1","metab-t-amines","auto","metab-t-amines | 3 file(s) | v1.3 | t02-plasma, t10-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-t-amines|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-t-amines","auto","metab-t-amines | 3 file(s) | v1.3 | t02-plasma, t10-muscle, t11-adipose",18,FALSE,18
+"freeze:metab-t-clinical|da|dream-acute","da dream-acute","freeze_file","stage1","metab-t-clinical","auto","metab-t-clinical | 1 file(s) | v2.1 | t02-plasma",8,FALSE,24
+"freeze:metab-t-clinical|metadata|features","metadata features","freeze_file","stage1","metab-t-clinical","auto","metab-t-clinical | 1 file(s) | v2.0 | t02-plasma",19,TRUE,18
+"freeze:metab-t-clinical|metadata|samples","metadata samples","freeze_file","stage1","metab-t-clinical","auto","metab-t-clinical | 1 file(s) | v2.0 | t02-plasma",19,TRUE,18
+"freeze:metab-t-clinical|qc-norm|absolute","qc-norm absolute","freeze_file","stage1","metab-t-clinical","auto","metab-t-clinical | 1 file(s) | v2.0 | t02-plasma",18,FALSE,18
+"freeze:metab-t-conv|da|dream-acute","da dream-acute","freeze_file","stage1","metab-t-conv","auto","metab-t-conv | 1 file(s) | v2.1 | t02-plasma",8,FALSE,24
+"freeze:metab-t-conv|metadata|features","metadata features","freeze_file","stage1","metab-t-conv","auto","metab-t-conv | 1 file(s) | v2.0 | t02-plasma",19,TRUE,18
+"freeze:metab-t-conv|metadata|samples","metadata samples","freeze_file","stage1","metab-t-conv","auto","metab-t-conv | 1 file(s) | v1.3 | t02-plasma",19,TRUE,18
+"freeze:metab-t-conv|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-t-conv","auto","metab-t-conv | 1 file(s) | v1.3 | t02-plasma",18,FALSE,18
+"freeze:metab-t-imm-crt|da|dream-acute","da dream-acute","freeze_file","stage1","metab-t-imm-crt","auto","metab-t-imm-crt | 1 file(s) | v2.1 | t02-plasma",8,FALSE,24
+"freeze:metab-t-imm-crt|metadata|features","metadata features","freeze_file","stage1","metab-t-imm-crt","auto","metab-t-imm-crt | 1 file(s) | v2.0 | t02-plasma",19,TRUE,18
+"freeze:metab-t-imm-crt|metadata|samples","metadata samples","freeze_file","stage1","metab-t-imm-crt","auto","metab-t-imm-crt | 1 file(s) | v1.3 | t02-plasma",19,TRUE,18
+"freeze:metab-t-imm-crt|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-t-imm-crt","auto","metab-t-imm-crt | 1 file(s) | v1.3 | t02-plasma",18,FALSE,18
+"freeze:metab-t-ka|da|dream-acute","da dream-acute","freeze_file","stage1","metab-t-ka","auto","metab-t-ka | 1 file(s) | v2.1 | t11-adipose",8,FALSE,24
+"freeze:metab-t-ka|metadata|features","metadata features","freeze_file","stage1","metab-t-ka","auto","metab-t-ka | 1 file(s) | v2.0 | t11-adipose",19,TRUE,18
+"freeze:metab-t-ka|metadata|samples","metadata samples","freeze_file","stage1","metab-t-ka","auto","metab-t-ka | 1 file(s) | v1.3 | t11-adipose",19,TRUE,18
+"freeze:metab-t-ka|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-t-ka","auto","metab-t-ka | 1 file(s) | v1.3 | t11-adipose",18,FALSE,18
+"freeze:metab-t-nuc|da|dream-acute","da dream-acute","freeze_file","stage1","metab-t-nuc","auto","metab-t-nuc | 2 file(s) | v2.1 | t10-muscle, t11-adipose",8,FALSE,24
+"freeze:metab-t-nuc|metadata|features","metadata features","freeze_file","stage1","metab-t-nuc","auto","metab-t-nuc | 2 file(s) | v2.0 | t10-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-t-nuc|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","metab-t-nuc","auto","metab-t-nuc | 1 file(s) | v1.3 | t10-muscle",3,FALSE,18
+"freeze:metab-t-nuc|metadata|samples","metadata samples","freeze_file","stage1","metab-t-nuc","auto","metab-t-nuc | 2 file(s) | v1.3 | t10-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-t-nuc|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-t-nuc","auto","metab-t-nuc | 2 file(s) | v1.3 | t10-muscle, t11-adipose",18,FALSE,18
+"freeze:metab-t-oxylipneg|da|dream-acute","da dream-acute","freeze_file","stage1","metab-t-oxylipneg","auto","metab-t-oxylipneg | 3 file(s) | v2.1 | t02-plasma, t10-muscle, t11-adipose",8,FALSE,24
+"freeze:metab-t-oxylipneg|metadata|features","metadata features","freeze_file","stage1","metab-t-oxylipneg","auto","metab-t-oxylipneg | 3 file(s) | v2.0 | t02-plasma, t10-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-t-oxylipneg|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","metab-t-oxylipneg","auto","metab-t-oxylipneg | 3 file(s) | v1.3 | t02-plasma, t10-muscle, t11-adipose",3,FALSE,18
+"freeze:metab-t-oxylipneg|metadata|samples","metadata samples","freeze_file","stage1","metab-t-oxylipneg","auto","metab-t-oxylipneg | 3 file(s) | v1.3 | t02-plasma, t10-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-t-oxylipneg|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-t-oxylipneg","auto","metab-t-oxylipneg | 3 file(s) | v1.3 | t02-plasma, t10-muscle, t11-adipose",18,FALSE,18
+"freeze:metab-t-tca|da|dream-acute","da dream-acute","freeze_file","stage1","metab-t-tca","auto","metab-t-tca | 3 file(s) | v2.1 | t02-plasma, t10-muscle, t11-adipose",8,FALSE,24
+"freeze:metab-t-tca|metadata|features","metadata features","freeze_file","stage1","metab-t-tca","auto","metab-t-tca | 3 file(s) | v2.0 | t02-plasma, t10-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-t-tca|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","metab-t-tca","auto","metab-t-tca | 1 file(s) | v1.3 | t11-adipose",3,FALSE,18
+"freeze:metab-t-tca|metadata|samples","metadata samples","freeze_file","stage1","metab-t-tca","auto","metab-t-tca | 3 file(s) | v1.3 | t02-plasma, t10-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-t-tca|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-t-tca","auto","metab-t-tca | 3 file(s) | v1.3, 2.0 | t02-plasma, t10-muscle, t11-adipose",18,FALSE,18
+"freeze:metab-u-hilicpos|da|dream-acute","da dream-acute","freeze_file","stage1","metab-u-hilicpos","auto","metab-u-hilicpos | 3 file(s) | v2.1 | t02-plasma, t06-muscle, t11-adipose",8,FALSE,24
+"freeze:metab-u-hilicpos|metadata|features","metadata features","freeze_file","stage1","metab-u-hilicpos","auto","metab-u-hilicpos | 3 file(s) | v2.0 | t02-plasma, t06-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-u-hilicpos|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","metab-u-hilicpos","auto","metab-u-hilicpos | 1 file(s) | v1.3 | t06-muscle",3,FALSE,18
+"freeze:metab-u-hilicpos|metadata|samples","metadata samples","freeze_file","stage1","metab-u-hilicpos","auto","metab-u-hilicpos | 3 file(s) | v1.3 | t02-plasma, t06-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-u-hilicpos|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-u-hilicpos","auto","metab-u-hilicpos | 3 file(s) | v1.3 | t02-plasma, t06-muscle, t11-adipose",18,FALSE,18
+"freeze:metab-u-ionpneg|da|dream-acute","da dream-acute","freeze_file","stage1","metab-u-ionpneg","auto","metab-u-ionpneg | 3 file(s) | v2.1 | t02-plasma, t06-muscle, t11-adipose",8,FALSE,24
+"freeze:metab-u-ionpneg|metadata|features","metadata features","freeze_file","stage1","metab-u-ionpneg","auto","metab-u-ionpneg | 3 file(s) | v2.0 | t02-plasma, t06-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-u-ionpneg|metadata|samples","metadata samples","freeze_file","stage1","metab-u-ionpneg","auto","metab-u-ionpneg | 3 file(s) | v1.3 | t02-plasma, t06-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-u-ionpneg|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-u-ionpneg","auto","metab-u-ionpneg | 3 file(s) | v1.3 | t02-plasma, t06-muscle, t11-adipose",18,FALSE,18
+"freeze:metab-u-lrpneg|da|dream-acute","da dream-acute","freeze_file","stage1","metab-u-lrpneg","auto","metab-u-lrpneg | 3 file(s) | v2.1 | t02-plasma, t10-muscle, t11-adipose",8,FALSE,24
+"freeze:metab-u-lrpneg|metadata|features","metadata features","freeze_file","stage1","metab-u-lrpneg","auto","metab-u-lrpneg | 3 file(s) | v2.0 | t02-plasma, t10-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-u-lrpneg|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","metab-u-lrpneg","auto","metab-u-lrpneg | 2 file(s) | v1.3 | t10-muscle, t11-adipose",3,FALSE,18
+"freeze:metab-u-lrpneg|metadata|samples","metadata samples","freeze_file","stage1","metab-u-lrpneg","auto","metab-u-lrpneg | 3 file(s) | v1.3 | t02-plasma, t10-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-u-lrpneg|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-u-lrpneg","auto","metab-u-lrpneg | 3 file(s) | v1.3 | t02-plasma, t10-muscle, t11-adipose",18,FALSE,18
+"freeze:metab-u-lrppos|da|dream-acute","da dream-acute","freeze_file","stage1","metab-u-lrppos","auto","metab-u-lrppos | 3 file(s) | v2.1 | t02-plasma, t10-muscle, t11-adipose",8,FALSE,24
+"freeze:metab-u-lrppos|metadata|features","metadata features","freeze_file","stage1","metab-u-lrppos","auto","metab-u-lrppos | 3 file(s) | v2.0 | t02-plasma, t10-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-u-lrppos|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","metab-u-lrppos","auto","metab-u-lrppos | 2 file(s) | v1.3 | t10-muscle, t11-adipose",3,FALSE,18
+"freeze:metab-u-lrppos|metadata|samples","metadata samples","freeze_file","stage1","metab-u-lrppos","auto","metab-u-lrppos | 3 file(s) | v1.3 | t02-plasma, t10-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-u-lrppos|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-u-lrppos","auto","metab-u-lrppos | 3 file(s) | v1.3 | t02-plasma, t10-muscle, t11-adipose",18,FALSE,18
+"freeze:metab-u-rpneg|da|dream-acute","da dream-acute","freeze_file","stage1","metab-u-rpneg","auto","metab-u-rpneg | 3 file(s) | v2.1 | t02-plasma, t06-muscle, t11-adipose",8,FALSE,24
+"freeze:metab-u-rpneg|metadata|features","metadata features","freeze_file","stage1","metab-u-rpneg","auto","metab-u-rpneg | 3 file(s) | v2.0 | t02-plasma, t06-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-u-rpneg|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","metab-u-rpneg","auto","metab-u-rpneg | 1 file(s) | v1.3 | t02-plasma",3,FALSE,18
+"freeze:metab-u-rpneg|metadata|samples","metadata samples","freeze_file","stage1","metab-u-rpneg","auto","metab-u-rpneg | 3 file(s) | v1.3 | t02-plasma, t06-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-u-rpneg|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-u-rpneg","auto","metab-u-rpneg | 3 file(s) | v1.3 | t02-plasma, t06-muscle, t11-adipose",18,FALSE,18
+"freeze:metab-u-rppos|da|dream-acute","da dream-acute","freeze_file","stage1","metab-u-rppos","auto","metab-u-rppos | 3 file(s) | v2.1 | t02-plasma, t06-muscle, t11-adipose",8,FALSE,24
+"freeze:metab-u-rppos|metadata|features","metadata features","freeze_file","stage1","metab-u-rppos","auto","metab-u-rppos | 3 file(s) | v2.0 | t02-plasma, t06-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-u-rppos|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","metab-u-rppos","auto","metab-u-rppos | 1 file(s) | v1.3 | t02-plasma",3,FALSE,18
+"freeze:metab-u-rppos|metadata|samples","metadata samples","freeze_file","stage1","metab-u-rppos","auto","metab-u-rppos | 3 file(s) | v1.3 | t02-plasma, t06-muscle, t11-adipose",19,TRUE,18
+"freeze:metab-u-rppos|qc-norm|log2","qc-norm log2","freeze_file","stage1","metab-u-rppos","auto","metab-u-rppos | 3 file(s) | v1.3 | t02-plasma, t06-muscle, t11-adipose",18,FALSE,18
+"freeze:prot-clinical|da|dream-acute","da dream-acute","freeze_file","stage1","prot-clinical","auto","prot-clinical | 1 file(s) | v2.1 | t02-plasma",8,FALSE,24
+"freeze:prot-clinical|metadata|features","metadata features","freeze_file","stage1","prot-clinical","auto","prot-clinical | 1 file(s) | v2.0 | t02-plasma",19,TRUE,18
+"freeze:prot-clinical|metadata|samples","metadata samples","freeze_file","stage1","prot-clinical","auto","prot-clinical | 1 file(s) | v2.0 | t02-plasma",19,TRUE,18
+"freeze:prot-clinical|qc-norm|absolute","qc-norm absolute","freeze_file","stage1","prot-clinical","auto","prot-clinical | 1 file(s) | v2.0 | t02-plasma",18,FALSE,18
+"freeze:prot-ol|da|dream-acute","da dream-acute","freeze_file","stage1","prot-ol","auto","prot-ol | 1 file(s) | v2.1 | t02-plasma",8,FALSE,24
+"freeze:prot-ol|metadata|features","metadata features","freeze_file","stage1","prot-ol","auto","prot-ol | 1 file(s) | v2.0 | t02-plasma",19,TRUE,18
+"freeze:prot-ol|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","prot-ol","auto","prot-ol | 1 file(s) | v1.2 | t02-plasma",3,FALSE,18
+"freeze:prot-ol|metadata|samples","metadata samples","freeze_file","stage1","prot-ol","auto","prot-ol | 1 file(s) | v1.2 | t02-plasma",19,TRUE,18
+"freeze:prot-ol|qc-norm|log2","qc-norm log2","freeze_file","stage1","prot-ol","auto","prot-ol | 1 file(s) | v2.0 | t02-plasma",18,FALSE,18
+"freeze:prot-ph|da|dream-acute","da dream-acute","freeze_file","stage1","prot-ph","auto","prot-ph | 2 file(s) | v2.1 | t07-adipose, t10-muscle",8,FALSE,24
+"freeze:prot-ph|imputed|log2-mn","imputed log2-mn","freeze_file","stage1","prot-ph","auto","prot-ph | 2 file(s) | v1.2, 2.0 | t07-adipose, t10-muscle",17,FALSE,18
+"freeze:prot-ph|metadata|features","metadata features","freeze_file","stage1","prot-ph","auto","prot-ph | 2 file(s) | v2.0 | t07-adipose, t10-muscle",19,TRUE,18
+"freeze:prot-ph|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","prot-ph","auto","prot-ph | 1 file(s) | v1.2 | t07-adipose",3,FALSE,18
+"freeze:prot-ph|metadata|samples","metadata samples","freeze_file","stage1","prot-ph","auto","prot-ph | 2 file(s) | v1.2 | t07-adipose, t10-muscle",19,TRUE,18
+"freeze:prot-ph|qc-norm|log2-mn","qc-norm log2-mn","freeze_file","stage1","prot-ph","auto","prot-ph | 2 file(s) | v1.2, 2.0 | t07-adipose, t10-muscle",18,FALSE,18
+"freeze:prot-pr|da|dream-acute","da dream-acute","freeze_file","stage1","prot-pr","auto","prot-pr | 2 file(s) | v2.1 | t07-adipose, t10-muscle",8,FALSE,24
+"freeze:prot-pr|imputed|log2-mn","imputed log2-mn","freeze_file","stage1","prot-pr","auto","prot-pr | 2 file(s) | v1.2, 2.0 | t07-adipose, t10-muscle",17,FALSE,18
+"freeze:prot-pr|metadata|features","metadata features","freeze_file","stage1","prot-pr","auto","prot-pr | 2 file(s) | v2.0 | t07-adipose, t10-muscle",19,TRUE,18
+"freeze:prot-pr|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","prot-pr","auto","prot-pr | 1 file(s) | v1.2 | t07-adipose",3,FALSE,18
+"freeze:prot-pr|metadata|samples","metadata samples","freeze_file","stage1","prot-pr","auto","prot-pr | 2 file(s) | v1.2 | t07-adipose, t10-muscle",19,TRUE,18
+"freeze:prot-pr|qc-norm|log2-mn","qc-norm log2-mn","freeze_file","stage1","prot-pr","auto","prot-pr | 2 file(s) | v1.2, 2.0 | t07-adipose, t10-muscle",18,FALSE,18
+"freeze:transcript-rna-seq|da|dream-acute","da dream-acute","freeze_file","stage1","transcript-rna-seq","auto","transcript-rna-seq | 3 file(s) | v2.1 | t04-blood-rna, t06-muscle, t11-adipose",8,FALSE,24
+"freeze:transcript-rna-seq|metadata|features","metadata features","freeze_file","stage1","transcript-rna-seq","auto","transcript-rna-seq | 3 file(s) | v2.0 | t04-blood-rna, t06-muscle, t11-adipose",19,TRUE,18
+"freeze:transcript-rna-seq|metadata|removed-samples","metadata removed-samples","freeze_file","stage1","transcript-rna-seq","auto","transcript-rna-seq | 3 file(s) | v1.2, 2.0 | t04-blood-rna, t06-muscle, t11-adipose",3,FALSE,18
+"freeze:transcript-rna-seq|metadata|samples","metadata samples","freeze_file","stage1","transcript-rna-seq","auto","transcript-rna-seq | 3 file(s) | v1.2, 2.0 | t04-blood-rna, t06-muscle, t11-adipose",19,TRUE,18
+"freeze:transcript-rna-seq|qc-norm|log-cpm","qc-norm log-cpm","freeze_file","stage1","transcript-rna-seq","auto","transcript-rna-seq | 3 file(s) | v2.0 | t04-blood-rna, t06-muscle, t11-adipose",18,FALSE,18
+"freeze:human-precovid-sed-adu_all_transcript-rna-seq_qc-report.html","human-precovid-sed-adu_all_transcript-rna-seq_qc-report","freeze_file","stage1","transcript-rna-seq","carried","v1.2 | upstream QC report, carried not built",3,FALSE,6
+"freeze:human-precovid-sed-adu_t05-human-pbmc_epigen-atac-seq_qc-report.html","human-precovid-sed-adu_t05-human-pbmc_epigen-atac-seq_qc-report","freeze_file","stage1","epigen-atac-seq","carried","v1.2 | upstream QC report, carried not built",3,FALSE,6
+"freeze:human-precovid-sed-adu_t06-human-muscle_epigen-atac-seq_qc-report.html","human-precovid-sed-adu_t06-human-muscle_epigen-atac-seq_qc-report","freeze_file","stage1","epigen-atac-seq","carried","v1.2 | upstream QC report, carried not built",3,FALSE,6
+"freeze:human-precovid-sed-adu_t07-adipose_prot-ph_metadata_qc-report.html","human-precovid-sed-adu_t07-adipose_prot-ph_metadata_qc-report","freeze_file","stage1","prot-ph","carried","v1.2 | upstream QC report, carried not built",3,FALSE,6
+"freeze:human-precovid-sed-adu_t07-adipose_prot-pr_metadata_qc-report.html","human-precovid-sed-adu_t07-adipose_prot-pr_metadata_qc-report","freeze_file","stage1","prot-pr","carried","v1.2 | upstream QC report, carried not built",3,FALSE,6
+"freeze:human-precovid-sed-adu_t10-muscle_prot-ph_qc-report.html","human-precovid-sed-adu_t10-muscle_prot-ph_qc-report","freeze_file","stage1","prot-ph","carried","v1.2 | upstream QC report, carried not built",3,FALSE,6
+"freeze:human-precovid-sed-adu_t10-muscle_prot-pr_qc-report.html","human-precovid-sed-adu_t10-muscle_prot-pr_qc-report","freeze_file","stage1","prot-pr","carried","v1.2 | upstream QC report, carried not built",3,FALSE,6
+"freeze:motrpac_human-precovid_1kg_pca.csv","motrpac_human-precovid_1kg_pca","freeze_file","stage1","shared","auto","v2.0",3,FALSE,6
+"freeze:motrpac_human-precovid_metabolite-cv.txt","motrpac_human-precovid_metabolite-cv","freeze_file","stage1","shared","auto","v2.0",3,FALSE,16
+"freeze:motrpac_human-precovid_refmet-map_provenance.json","motrpac_human-precovid_refmet-map_provenance","freeze_file","stage1","shared","auto","v2.0",3,FALSE,18
+"freeze:motrpac_human-precovid_refmet-map.txt","motrpac_human-precovid_refmet-map","freeze_file","stage1","shared","auto","v2.0",3,FALSE,18
+"freeze:motrpac-mappings-human-feature-to-gene.txt","motrpac-mappings-human-feature-to-gene","freeze_file","stage1","shared","auto","v2.2",3,FALSE,21
+"freeze:txdb_hsapiens_ensembl_v105.sqlite","txdb_hsapiens_ensembl_v105","freeze_file","stage1","shared","auto","v2.0",3,FALSE,18
+"src:gcloud_adc","gcloud_adc","source","external","shared","open","auth | application-default credentials",0,FALSE,0
+"src:production_bucket","production_bucket","source","external","shared","gated","bucket | gs://motrpac-data-hub/analysis/human-precovid-sed-adu/c1.3 | consortium-gated",17,FALSE,0
+"src:staging_bucket","staging_bucket","source","external","shared","gated","bucket | gs://pre-cawg/staging_20260511 | consortium-gated",18,FALSE,0
+"src:pheno_bucket","pheno_bucket","source","external","shared","gated","bucket | gs://motrpac-data-hub/human-eqc/adult/ | consortium-gated",0,FALSE,0
+"src:quant_id_bucket","quant_id_bucket","source","external","shared","gated","bucket | gs://motrpac-data-hub/quant-id/human-precovid/v1.0/ | consortium-gated",93,TRUE,0
+"src:refmet_api","refmet_api","source","external","shared","open","url | https://www.metabolomicsworkbench.org/databases/refmet/name_to_refmet_new_minID.php",0,FALSE,0
+"src:refmet_subclass_form","refmet_subclass_form","source","external","shared","open","url | https://www.metabolomicsworkbench.org/databases/refmet/index.php",10,FALSE,0
+"src:keggrest","keggrest","source","external","shared","open","url | https://rest.kegg.jp",0,FALSE,0
+"src:enrichr_cellmarker","enrichr_cellmarker","source","external","shared","open","url | https://maayanlab.cloud/Enrichr",10,FALSE,0
+"src:phosphositeplus_psp","phosphositeplus_psp","source","external","shared","open","url | https://www.phosphosite.org/staticDownloads.action",10,FALSE,0
+"src:utoronto_tfs","utoronto_tfs","source","external","shared","open","file | scripts/10_build_data/14_build_utoronto_tfs/sources/DatabaseExtract_v_1.01.txt",1,FALSE,0
+"src:mitocarta","mitocarta","source","external","shared","open","file | scripts/00_preflight/data-raw/gmt_processing/sources/Human.MitoCarta3.0.xls",10,FALSE,0
+"src:ptmsigdb","ptmsigdb","source","external","shared","open","file | scripts/00_preflight/data-raw/gmt_processing/sources/ptm.sig.db.all.flanking.human.v2.0.0.gmt.gz",10,FALSE,0
+"src:msigdb_c2","msigdb_c2","source","external","shared","open","file | scripts/00_preflight/data-raw/gmt_processing/prebuilt/c2.all.v2023.2.Hs.symbols.gmt.gz",1,FALSE,0
+"src:msigdb_c5","msigdb_c5","source","external","shared","open","file | scripts/00_preflight/data-raw/gmt_processing/prebuilt/c5.go.v2023.2.Hs.symbols.gmt.gz",1,FALSE,0
+"src:splicing_da_rds","splicing_da_rds","source","external","shared","gated","file | scripts/00_preflight/data-raw/sources/differential_splicing.rds | consortium-gated",5,FALSE,0
+"src:covariates_csv","covariates_csv","source","external","shared","open","file | scripts/00_preflight/data-raw/sources/covariates_pre_cawg.csv",8,FALSE,0
+"src:metabolite_cv_file","metabolite_cv_file","source","external","shared","gated","file | gs://motrpac-data-hub/analysis/human-precovid-sed-adu/c1.3/resources/motrpac_human-precovid_metabolite-cv_v1.2.txt | consortium-gated",0,FALSE,0
+"src:refmet_snapshot","refmet_snapshot","source","external","shared","open","file | scripts/00_preflight/data-raw/sources/refmet/refmet_name_map.txt",62,TRUE,0
+"src:kegg_compound_snapshot","kegg_compound_snapshot","source","external","shared","open","file | scripts/00_preflight/data-raw/sources/refmet/kegg_compound_list.txt",62,TRUE,0
+"pfout:mitocarta3.0.symbols.gmt.gz","mitocarta3.0.symbols.gmt.gz","preflight_object","stage0","shared","auto","source: Human.MitoCarta3.0.xls | free; cite Broad MitoCarta3.0",8,FALSE,5
+"pfout:phosphositeplus.v6.7.1.1.flanking.gmt.gz","phosphositeplus.v6.7.1.1.flanking.gmt.gz","preflight_object","stage0","shared","auto","source: Kinase_Substrate_Dataset.gz | PhosphoSitePlus — non-commercial use only; registration required",8,FALSE,5
+"pfout:metabolomics.workbench.refmet.2024.08.07.metabolites.gmt.gz","metabolomics.workbench.refmet.2024.08.07.metabolites.gmt.gz","preflight_object","stage0","shared","auto","source: (RefMet API query) | free; live query stamped 2024-08-07",8,FALSE,5
+"pfout:ptmsigdb.v2.0.flanking.gmt.gz","ptmsigdb.v2.0.flanking.gmt.gz","preflight_object","stage0","shared","auto","source: ptm.sig.db.all.flanking.human.v2.0.0.gmt.gz | free; PTMsigDB v2.0",8,FALSE,5
+"pfout:cellmarker.v2024.symbols.gmt.gz","cellmarker.v2024.symbols.gmt.gz","preflight_object","stage0","shared","auto","source: CellMarker_2024.txt.gz | free; via Enrichr, downloaded 2025-01-23",8,FALSE,5
+"gate:check_required_inputs","check_required_inputs","gate","stage1","shared","auto","hard gate: every pre-existing input Stage 1 consumes",1,FALSE,8
+"gatein:preflight:OME_TISSUE_CODE","preflight:OME_TISSUE_CODE","gate_input","stage0","shared","required","required before any Stage 1 generator runs",2,FALSE,7
+"gatein:preflight:OUTLIERS","preflight:OUTLIERS","gate_input","stage0","shared","required","required before any Stage 1 generator runs",2,FALSE,7
+"gatein:preflight:COVARIATES_FILE","preflight:COVARIATES_FILE","gate_input","stage0","shared","required","required before any Stage 1 generator runs",2,FALSE,7
+"gatein:preflight:QUANTID_BUCKET_FILES","preflight:QUANTID_BUCKET_FILES","gate_input","stage0","shared","required","required before any Stage 1 generator runs",2,FALSE,2
+"gatein:methylcap","methylcap","gate_input","external","shared","vendored","vendored external table, one per tissue (fetch: make sources)",2,FALSE,2
+"gatein:methylcap_da","methylcap_da","gate_input","external","shared","vendored","vendored external table, one per tissue (fetch: make sources)",2,FALSE,2
+"gatein:atac","atac","gate_input","external","shared","vendored","vendored external table, one per tissue (fetch: make sources)",2,FALSE,2
+"gatein:atac_da","atac_da","gate_input","external","shared","vendored","vendored external table, one per tissue (fetch: make sources)",2,FALSE,2
+"lib:scripts/00_preflight/data-raw/lib/helpers.R","helpers.R","lib_file","stage0","shared","auto","shared source file: scripts/00_preflight/data-raw/lib",208,TRUE,3
+"fn:.writeGMT",".writeGMT","lib_fn","stage0","shared","auto","defined in helpers.R",0,FALSE,4
+"fn:ome_available_list","ome_available_list","lib_fn","stage0","shared","auto","defined in helpers.R",0,FALSE,4
+"fn:.find_ome",".find_ome","lib_fn","stage0","shared","auto","defined in helpers.R",0,FALSE,4
+"fn:.find_tissue",".find_tissue","lib_fn","stage0","shared","auto","defined in helpers.R",0,FALSE,4
+"fn:.dataraw_dir",".dataraw_dir","lib_fn","stage0","shared","auto","defined in helpers.R",0,FALSE,4
+"fn:.out_dir",".out_dir","lib_fn","stage0","shared","auto","defined in helpers.R",0,FALSE,4
+"fn:.output_dir",".output_dir","lib_fn","stage0","shared","auto","defined in helpers.R",0,FALSE,4
+"fn:.gmt_out",".gmt_out","lib_fn","stage0","shared","auto","defined in helpers.R",0,FALSE,4
+"lib:scripts/10_build_data/09_build_da/da_common.R","da_common.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/09_build_da",45,TRUE,5
+"fn:run_dream","run_dream","lib_fn","stage1","shared","auto","defined in da_common.R",0,FALSE,4
+"fn:.ebayes_legacy",".ebayes_legacy","lib_fn","stage1","shared","auto","defined in da_common.R",0,FALSE,4
+"fn:.convert_dream_output",".convert_dream_output","lib_fn","stage1","shared","auto","defined in da_common.R",0,FALSE,4
+"fn:process_covariates","process_covariates","lib_fn","stage1","shared","auto","defined in da_common.R",0,FALSE,4
+"fn:.generate_contrasts_acute",".generate_contrasts_acute","lib_fn","stage1","shared","auto","defined in da_common.R",0,FALSE,4
+"fn:.generate_sex_contrasts",".generate_sex_contrasts","lib_fn","stage1","shared","auto","defined in da_common.R",0,FALSE,4
+"fn:.da_freeze_dir",".da_freeze_dir","lib_fn","stage1","shared","auto","defined in da_common.R",0,FALSE,4
+"fn:run_da_models","run_da_models","lib_fn","stage1","shared","auto","defined in da_common.R",0,FALSE,4
+"fn:da_parallel_enabled","da_parallel_enabled","lib_fn","stage1","shared","auto","defined in da_common.R",0,FALSE,4
+"lib:scripts/10_build_data/09_build_da/filter_paired_n.R","filter_paired_n.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/09_build_da",47,TRUE,3
+"fn:filter_paired_n","filter_paired_n","lib_fn","stage1","shared","auto","defined in filter_paired_n.R",0,FALSE,4
+"lib:scripts/10_build_data/12_build_camera_results/run_cameraPR.R","run_cameraPR.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/12_build_camera_results",8,FALSE,3
+"fn:run_cameraPR","run_cameraPR","lib_fn","stage1","shared","auto","defined in run_cameraPR.R",0,FALSE,4
+"fn:.prepare_DA_results",".prepare_DA_results","lib_fn","stage1","shared","auto","defined in run_cameraPR.R",0,FALSE,4
+"fn:.create_index",".create_index","lib_fn","stage1","shared","auto","defined in run_cameraPR.R",0,FALSE,4
+"fn:.prepare_sets",".prepare_sets","lib_fn","stage1","shared","auto","defined in run_cameraPR.R",0,FALSE,4
+"fn:.prepare_DA_results_and_sets",".prepare_DA_results_and_sets","lib_fn","stage1","shared","auto","defined in run_cameraPR.R",0,FALSE,4
+"lib:scripts/10_build_data/13_build_fcm/run_cluster_cameraPR.R","run_cluster_cameraPR.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/13_build_fcm",4,FALSE,3
+"fn:run_cluster_cameraPR","run_cluster_cameraPR","lib_fn","stage1","shared","auto","defined in run_cluster_cameraPR.R",0,FALSE,4
+"fn:.prepare_cluster_mem",".prepare_cluster_mem","lib_fn","stage1","shared","auto","defined in run_cluster_cameraPR.R",0,FALSE,4
+"fn:.split_membership_by_ome",".split_membership_by_ome","lib_fn","stage1","shared","auto","defined in run_cluster_cameraPR.R",0,FALSE,4
+"lib:scripts/10_build_data/13_build_fcm/run_cluster_ORA.R","run_cluster_ORA.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/13_build_fcm",4,FALSE,3
+"fn:run_cluster_ORA","run_cluster_ORA","lib_fn","stage1","shared","auto","defined in run_cluster_ORA.R",0,FALSE,4
+"fn:.cluster_ORA",".cluster_ORA","lib_fn","stage1","shared","auto","defined in run_cluster_ORA.R",0,FALSE,4
+"fn:.fast_list_intersect",".fast_list_intersect","lib_fn","stage1","shared","auto","defined in run_cluster_ORA.R",0,FALSE,4
+"lib:scripts/10_build_data/13_build_fcm/run_cmeans.R","run_cmeans.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/13_build_fcm",4,FALSE,3
+"fn:run_cmeans","run_cmeans","lib_fn","stage1","shared","auto","defined in run_cmeans.R",0,FALSE,4
+"fn:.reorder_clusters",".reorder_clusters","lib_fn","stage1","shared","auto","defined in run_cmeans.R",0,FALSE,4
+"lib:scripts/10_build_data/15_build_ptmsea_input/preprocess_PTMSEA.R","preprocess_PTMSEA.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/15_build_ptmsea_input",2,FALSE,3
+"fn:preprocess_PTMSEA","preprocess_PTMSEA","lib_fn","stage1","shared","auto","defined in preprocess_PTMSEA.R",0,FALSE,4
+"lib:scripts/10_build_data/16_build_scion/run_SCION.R","run_SCION.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/16_build_scion",5,FALSE,3
+"fn:run_SCION","run_SCION","lib_fn","stage1","shared","auto","defined in run_SCION.R",0,FALSE,4
+"fn:scion_data_processing","scion_data_processing","lib_fn","stage1","shared","auto","defined in run_SCION.R",0,FALSE,4
+"fn:RS.Get.Weight.Matrix","RS.Get.Weight.Matrix","lib_fn","stage1","shared","auto","defined in run_SCION.R",0,FALSE,4
+"fn:RSGWM2","RSGWM2","lib_fn","stage1","shared","auto","defined in run_SCION.R",0,FALSE,4
+"lib:scripts/10_build_data/16_build_scion/scion_matrixes.R","scion_matrixes.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/16_build_scion",9,FALSE,3
+"fn:.scion_imputed_path",".scion_imputed_path","lib_fn","stage1","shared","auto","defined in scion_matrixes.R",0,FALSE,4
+"fn:.scion_read_imputed",".scion_read_imputed","lib_fn","stage1","shared","auto","defined in scion_matrixes.R",0,FALSE,4
+"fn:.scion_tf_features",".scion_tf_features","lib_fn","stage1","shared","auto","defined in scion_matrixes.R",0,FALSE,4
+"fn:.scion_load_da",".scion_load_da","lib_fn","stage1","shared","auto","defined in scion_matrixes.R",0,FALSE,4
+"fn:.scion_de_features",".scion_de_features","lib_fn","stage1","shared","auto","defined in scion_matrixes.R",0,FALSE,4
+"fn:combine_qc_matrixes","combine_qc_matrixes","lib_fn","stage1","shared","auto","defined in scion_matrixes.R",0,FALSE,4
+"fn:.load_scion_matrixes",".load_scion_matrixes","lib_fn","stage1","shared","auto","defined in scion_matrixes.R",0,FALSE,4
+"fn:.find_shared_scion_matrixes",".find_shared_scion_matrixes","lib_fn","stage1","shared","auto","defined in scion_matrixes.R",0,FALSE,4
+"lib:scripts/10_build_data/16_build_scion/scion_run_cmeans.R","scion_run_cmeans.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/16_build_scion",2,FALSE,3
+"fn:scion_run_cmeans","scion_run_cmeans","lib_fn","stage1","shared","auto","defined in scion_run_cmeans.R",0,FALSE,4
+"lib:scripts/10_build_data/lib/bic_norm_qc_tools.R","bic_norm_qc_tools.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/lib",72,TRUE,3
+"fn:recast_numeric_data_frame","recast_numeric_data_frame","lib_fn","stage1","shared","auto","defined in bic_norm_qc_tools.R",0,FALSE,4
+"fn:DownloadBucketLocal","DownloadBucketLocal","lib_fn","stage1","shared","auto","defined in bic_norm_qc_tools.R",0,FALSE,4
+"fn:get_site","get_site","lib_fn","stage1","shared","auto","defined in bic_norm_qc_tools.R",0,FALSE,4
+"fn:read_experimental_details","read_experimental_details","lib_fn","stage1","shared","auto","defined in bic_norm_qc_tools.R",0,FALSE,4
+"fn:parse_metabolomics_dataset_by_regex","parse_metabolomics_dataset_by_regex","lib_fn","stage1","shared","auto","defined in bic_norm_qc_tools.R",0,FALSE,4
+"fn:read_single_metabolomics_dataset_from_bucket","read_single_metabolomics_dataset_from_bucket","lib_fn","stage1","shared","auto","defined in bic_norm_qc_tools.R",0,FALSE,4
+"fn:read_metabolomics_datasets_from_download_obj","read_metabolomics_datasets_from_download_obj","lib_fn","stage1","shared","auto","defined in bic_norm_qc_tools.R",0,FALSE,4
+"fn:merge_named_and_unnamed_metabolomics_datasets","merge_named_and_unnamed_metabolomics_datasets","lib_fn","stage1","shared","auto","defined in bic_norm_qc_tools.R",0,FALSE,4
+"fn:min_val_knn_hybrid_imputation","min_val_knn_hybrid_imputation","lib_fn","stage1","shared","auto","defined in bic_norm_qc_tools.R",0,FALSE,4
+"fn:run_median_mad_norm","run_median_mad_norm","lib_fn","stage1","shared","auto","defined in bic_norm_qc_tools.R",0,FALSE,4
+"lib:scripts/10_build_data/lib/file_versions.R","file_versions.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/lib",198,TRUE,3
+"fn:.fv_entry",".fv_entry","lib_fn","stage1","shared","auto","defined in file_versions.R",0,FALSE,4
+"fn:.fv_rows",".fv_rows","lib_fn","stage1","shared","auto","defined in file_versions.R",0,FALSE,4
+"fn:freeze_files","freeze_files","lib_fn","stage1","shared","auto","defined in file_versions.R",0,FALSE,4
+"fn:.fv_new_version",".fv_new_version","lib_fn","stage1","shared","auto","defined in file_versions.R",0,FALSE,4
+"fn:freeze_version","freeze_version","lib_fn","stage1","shared","auto","defined in file_versions.R",0,FALSE,4
+"lib:scripts/10_build_data/lib/qc_helpers.R","qc_helpers.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/lib",182,TRUE,4
+"fn:precovid_root","precovid_root","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:variancepartition_parallel_enabled","variancepartition_parallel_enabled","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:rerun_atac_enabled","rerun_atac_enabled","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:quantid_path","quantid_path","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:.ensembl_v105_txdb",".ensembl_v105_txdb","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:ensembl_v105_getBM","ensembl_v105_getBM","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:.match_ome_tissue_code",".match_ome_tissue_code","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:write_with_path_name","write_with_path_name","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:.clinical_ome_for_feature",".clinical_ome_for_feature","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:.freeze_subdir_for_ome",".freeze_subdir_for_ome","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:load_pheno","load_pheno","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:.median_mad_norm",".median_mad_norm","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:.remove_na",".remove_na","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:report_replicate_correlations","report_replicate_correlations","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:pre_cawg_get_peak_annotations_hs","pre_cawg_get_peak_annotations_hs","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:run_mice","run_mice","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:.metab_cvs",".metab_cvs","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:.feature_to_gene",".feature_to_gene","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:load_qc_local","load_qc_local","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:.match_subset_arg",".match_subset_arg","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:subset_qc","subset_qc","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:.eliminate_redundant_metab",".eliminate_redundant_metab","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"fn:.filter_unnamed_metab",".filter_unnamed_metab","lib_fn","stage1","shared","auto","defined in qc_helpers.R",0,FALSE,4
+"lib:scripts/10_build_data/lib/test_helpers.R","test_helpers.R","lib_file","stage1","shared","auto","shared source file: scripts/10_build_data/lib",45,TRUE,3
+"fn:`%||%`","`%||%`","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:.pipeline_env_val",".pipeline_env_val","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:.record",".record","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:assert","assert","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:check","check","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:skip","skip","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:report","report","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:warn","warn","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:finish","finish","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:load_built","load_built","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:load_preflight","load_preflight","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:assert_cols","assert_cols","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:assert_levels","assert_levels","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:assert_subset","assert_subset","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:assert_unique","assert_unique","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:assert_na","assert_na","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:assert_completeness","assert_completeness","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:assert_no_dup_versions","assert_no_dup_versions","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:expected_tissue_omes","expected_tissue_omes","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:covariate_cols_for","covariate_cols_for","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:assert_qc_leaf","assert_qc_leaf","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:.find_rda",".find_rda","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:.load_rda",".load_rda","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:.cmp",".cmp","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:diff_vs_package","diff_vs_package","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:.have_gsutil",".have_gsutil","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:.per_feat_cor",".per_feat_cor","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:.bucket_files",".bucket_files","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"fn:diff_freeze_vs_bucket","diff_freeze_vs_bucket","lib_fn","stage1","shared","auto","defined in test_helpers.R",0,FALSE,4
+"lib:scripts/20_upload_bucket/lib/bucket_helpers.R","bucket_helpers.R","lib_file","stage2","shared","auto","shared source file: scripts/20_upload_bucket/lib",14,FALSE,3
+"fn:.pipeline_env",".pipeline_env","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:.timestamp",".timestamp","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:gcs_inventory","gcs_inventory","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:md5_base64_to_hex","md5_base64_to_hex","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:freeze_inventory","freeze_inventory","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:parse_bic_name","parse_bic_name","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:strip_to_version","strip_to_version","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:.ver_rank",".ver_rank","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:join_key","join_key","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:path_ext","path_ext","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:classify_freeze_file","classify_freeze_file","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:freeze_numerically_equivalent","freeze_numerically_equivalent","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:report_write","report_write","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"fn:write_replace_readme","write_replace_readme","lib_fn","stage2","shared","auto","defined in bucket_helpers.R",0,FALSE,4
+"lib:scripts/20_upload_bucket/lib/expected_columns.R","expected_columns.R","lib_file","stage2","shared","auto","shared source file: scripts/20_upload_bucket/lib",1,FALSE,3
+"fn:.get_expected_cols",".get_expected_cols","lib_fn","stage2","shared","auto","defined in expected_columns.R",0,FALSE,4
+"lib:scripts/20_upload_bucket/lib/required_structure.R","required_structure.R","lib_file","stage2","shared","auto","shared source file: scripts/20_upload_bucket/lib",6,FALSE,3
+"fn:.qc_details",".qc_details","lib_fn","stage2","shared","auto","defined in required_structure.R",0,FALSE,4
+"fn:.gcs_subdir",".gcs_subdir","lib_fn","stage2","shared","auto","defined in required_structure.R",0,FALSE,4
+"fn:.da_details",".da_details","lib_fn","stage2","shared","auto","defined in required_structure.R",0,FALSE,4
+"fn:.row",".row","lib_fn","stage2","shared","auto","defined in required_structure.R",0,FALSE,4
+"fn:.pair_rows",".pair_rows","lib_fn","stage2","shared","auto","defined in required_structure.R",0,FALSE,4
+"fn:is_carried_forward","is_carried_forward","lib_fn","stage2","shared","auto","defined in required_structure.R",0,FALSE,4
+"lib:scripts/30_update_relevant_packages/audit/lib/pkg_introspect.R","pkg_introspect.R","lib_file","stage3","shared","auto","shared source file: scripts/30_update_relevant_packages/audit/lib",21,TRUE,3
+"fn:pkg_r_files","pkg_r_files","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_data_objects","pkg_data_objects","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_man_topics","pkg_man_topics","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_man_aliases","pkg_man_aliases","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_data_doc_aliases","pkg_data_doc_aliases","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:read_description","read_description","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:description_deps","description_deps","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:parse_namespace","parse_namespace","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_function_defs","pkg_function_defs","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_function_env","pkg_function_env","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_call_graph","pkg_call_graph","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_self_recursive","pkg_self_recursive","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:find_cycles","find_cycles","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_qualified_calls","pkg_qualified_calls","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_symbol_uses","pkg_symbol_uses","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_symbol_use_counts","pkg_symbol_use_counts","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_attached_calls","pkg_attached_calls","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:pkg_mentions","pkg_mentions","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:classify_mention","classify_mention","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:rbuildignore_covers","rbuildignore_covers","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"fn:write_tsv","write_tsv","lib_fn","stage3","shared","auto","defined in pkg_introspect.R",0,FALSE,4
+"lib:scripts/30_update_relevant_packages/carry/lib/carry_helpers.R","carry_helpers.R","lib_file","stage3","shared","auto","shared source file: scripts/30_update_relevant_packages/carry/lib",19,TRUE,3
+"fn:script_dir","script_dir","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:parse_opts","parse_opts","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:read_tsv","read_tsv","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:new_report","new_report","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:record","record","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:report_frame","report_frame","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:git_out","git_out","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:is_git_repo","is_git_repo","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:git_branch","git_branch","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:git_sha","git_sha","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:git_dirty","git_dirty","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:set_description_field","set_description_field","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:load_rda_object","load_rda_object","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:compare_object","compare_object","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:dim_str","dim_str","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:describe_object","describe_object","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"fn:save_package_object","save_package_object","lib_fn","stage3","shared","auto","defined in carry_helpers.R",0,FALSE,4
+"lib:scripts/30_update_relevant_packages/carry/lib/routing.R","routing.R","lib_file","stage3","shared","auto","shared source file: scripts/30_update_relevant_packages/carry/lib",2,FALSE,3
+"fn:route_object","route_object","lib_fn","stage3","shared","auto","defined in routing.R",0,FALSE,4
+"fn:route_objects","route_objects","lib_fn","stage3","shared","auto","defined in routing.R",0,FALSE,4
+"sink:STAGING_BUCKET","STAGING_BUCKET","sink","stage2","shared","gated","gs://pre-cawg/staging_20260806",1,FALSE,29
+"sink:NEW_PRODUCTION_BUCKET","NEW_PRODUCTION_BUCKET","sink","stage2","shared","gated","gs://motrpac-data-hub/analysis/human-precovid-sed-adu/c2.0",0,FALSE,30
+"sink:DATA_PKG_REPO","DATA_PKG","sink","stage3","shared","auto","downstream repo this stage writes into",0,FALSE,39
+"sink:ANALYSIS_PKG_REPO","ANALYSIS_PKG","sink","stage3","shared","auto","downstream repo this stage writes into",0,FALSE,39

@@ -1,0 +1,21 @@
+id	kind	location	consumed_by	gated	notes
+gcloud_adc	auth	application-default credentials	all gsutil/dl_read_gcp calls	no	gcloud auth application-default login
+production_bucket	bucket	gs://motrpac-data-hub/analysis/human-precovid-sed-adu/c1.3	Stage 2 snapshot; METABOLOMICS_CVS; OUTLIERS	yes	read access; consortium-gated
+staging_bucket	bucket	gs://pre-cawg/staging_20260511	Stage 2 copy/diff/upload; HUMAN_FEATURE_TO_GENE	yes	write access needed
+pheno_bucket	bucket	gs://motrpac-data-hub/human-eqc/adult/	Data pheno.R	yes	phenotype DS/DD v8.0
+quant_id_bucket	bucket	gs://motrpac-data-hub/quant-id/human-precovid/v1.0/	Analysis generate_*_qc_norm	yes	raw per-ome quant/metadata
+refmet_api	url	https://www.metabolomicsworkbench.org/databases/refmet/name_to_refmet_new_minID.php	sources/refmet/build_refmet_cache.R	no	provenance only — the metab stem reads the frozen sources/refmet/refmet_name_map.txt; only the builder POSTs here
+refmet_subclass_form	url	https://www.metabolomicsworkbench.org/databases/refmet/index.php	gmt_processing/GMT_RefMet_subclass.R	no	provenance only — GMT_RefMet_subclass.R emits the frozen 2024-08-07 snapshot, no live query; original endpoint name_to_refmetF_form.php now 404s
+keggrest	url	https://rest.kegg.jp	sources/refmet/build_refmet_cache.R	no	provenance only — the metab stem reads the frozen sources/refmet/kegg_compound_list.txt; only the builder queries KEGGREST
+enrichr_cellmarker	url	https://maayanlab.cloud/Enrichr	gmt_processing/GMT_CellMarker.R	no	CellMarker_2024.txt.gz; accessed 2025-01-23
+phosphositeplus_psp	url	https://www.phosphosite.org/staticDownloads.action	gmt_processing/GMT_PSP_kinase.R	no	non-commercial license; Kinase_Substrate_Dataset.gz v6.7.1.1
+utoronto_tfs	file	scripts/10_build_data/14_build_utoronto_tfs/sources/DatabaseExtract_v_1.01.txt	UTORONTO_TFs.R (step 14)	no	vendored raw source; Human TFs v1.01 (Lambert et al. 2018) from https://humantfs.ccbr.utoronto.ca/download.php; see that folder's README.md
+mitocarta	file	scripts/00_preflight/data-raw/gmt_processing/sources/Human.MitoCarta3.0.xls	gmt_processing/GMT_MitoCarta.R	no	vendored raw source; see gmt_processing/sources/README.md
+ptmsigdb	file	scripts/00_preflight/data-raw/gmt_processing/sources/ptm.sig.db.all.flanking.human.v2.0.0.gmt.gz	gmt_processing/GMT_PTMSigDB.R	no	vendored raw source; see gmt_processing/sources/README.md
+msigdb_c2	file	scripts/00_preflight/data-raw/gmt_processing/prebuilt/c2.all.v2023.2.Hs.symbols.gmt.gz	MOLECULAR_SIGNATURES.R	no	download-only (login required); vendored prebuilt; GENCODE 39 / Ensembl v105
+msigdb_c5	file	scripts/00_preflight/data-raw/gmt_processing/prebuilt/c5.go.v2023.2.Hs.symbols.gmt.gz	MOLECULAR_SIGNATURES.R	no	download-only (login required); vendored prebuilt; GENCODE 39 / Ensembl v105
+splicing_da_rds	file	scripts/00_preflight/data-raw/sources/differential_splicing.rds	SPLICING_DA.R	yes	supplied by Zidong Zhang (MSSM); vendored under data-raw/sources/
+covariates_csv	file	scripts/00_preflight/data-raw/sources/covariates_pre_cawg.csv	COVARIATES_FILE.R	no	vendored from the precovid repo's library/covariates_pre_cawg.csv
+metabolite_cv_file	file	gs://motrpac-data-hub/analysis/human-precovid-sed-adu/c1.3/resources/motrpac_human-precovid_metabolite-cv_v1.2.txt	METABOLOMICS_CVS.R	yes	on production bucket; published output of precovid-analyses QC/human-precovid-sed-adu_all_metabolomics_qc-cvs.Rmd, the origin of every METABOLOMICS_CVS copy
+refmet_snapshot	file	scripts/00_preflight/data-raw/sources/refmet/refmet_name_map.txt	generate_metab_qc_norm.R (.annotate_refmet); staged to resources/	no	frozen RefMet batch response; rebuild with sources/refmet/build_refmet_cache.R
+kegg_compound_snapshot	file	scripts/00_preflight/data-raw/sources/refmet/kegg_compound_list.txt	generate_metab_qc_norm.R residual KEGG IDs	no	frozen KEGGREST::keggList(compound); rebuild with sources/refmet/build_refmet_cache.R

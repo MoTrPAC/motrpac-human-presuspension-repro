@@ -1,0 +1,2 @@
+"sample"	"Tissue"	"reason"
+"11018021102"	"Adipose"	"outlier, PC3.308.75"

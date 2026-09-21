@@ -1,0 +1,170 @@
+{
+  "_readme": "SLURM submission guidelines for motrpac-human-presuspension-repro. Read docs/SLURM.md before editing. Resolution order for every field: PRECOVID_SLURM_<FIELD> env var, then jobs.<job key>.<field>, then defaults.<field>. A job key is a stage name (preflight, data, upload, update-relevant-packages) or a step path (10_build_data/06_generate_qc_norm). Empty string or absent means the flag is omitted from sbatch.",
+
+  "cluster": "scg",
+  "enabled": false,
+
+  "defaults": {
+    "account": "CHANGE_ME",
+    "partition": "batch",
+    "qos": "",
+    "time": "04:00:00",
+    "nodes": 1,
+    "ntasks": 1,
+    "cpus_per_task": 4,
+    "mem": "32G",
+    "constraint": "",
+    "mail_type": "",
+    "mail_user": "",
+    "sbatch_args": []
+  },
+
+  "environment": {
+    "modules": [],
+    "pre_commands": [],
+    "export": "ALL",
+    "tmpdir": "",
+    "bind_r_cores": true
+  },
+
+  "logs": {
+    "dir": "logs/slurm"
+  },
+
+  "poll_seconds": 30,
+
+  "jobs": {
+    "preflight": {
+      "time": "00:45:00",
+      "cpus_per_task": 1,
+      "mem": "8G"
+    },
+    "data": {
+      "time": "48:00:00",
+      "cpus_per_task": 16,
+      "mem": "128G"
+    },
+    "upload": {
+      "time": "12:00:00",
+      "cpus_per_task": 2,
+      "mem": "16G"
+    },
+    "update-relevant-packages": {
+      "time": "01:00:00",
+      "cpus_per_task": 1,
+      "mem": "8G"
+    },
+    "data-objects": {
+      "time": "02:00:00",
+      "cpus_per_task": 2,
+      "mem": "16G"
+    },
+
+    "10_build_data/01_stage_clinical": {
+      "time": "01:00:00",
+      "cpus_per_task": 1,
+      "mem": "16G"
+    },
+    "10_build_data/02_stage_pheno": {
+      "time": "01:00:00",
+      "cpus_per_task": 1,
+      "mem": "16G"
+    },
+    "10_build_data/03_build_molecular_signatures": {
+      "time": "02:00:00",
+      "cpus_per_task": 2,
+      "mem": "32G"
+    },
+    "10_build_data/04_build_set_to_id": {
+      "time": "02:00:00",
+      "cpus_per_task": 2,
+      "mem": "32G"
+    },
+    "10_build_data/05_stage_metabolomics_cvs": {
+      "time": "01:00:00",
+      "cpus_per_task": 1,
+      "mem": "16G"
+    },
+    "10_build_data/06_generate_qc_norm": {
+      "time": "24:00:00",
+      "cpus_per_task": 16,
+      "mem": "128G"
+    },
+    "10_build_data/07_build_human_feature_to_gene": {
+      "time": "02:00:00",
+      "cpus_per_task": 2,
+      "mem": "32G"
+    },
+    "10_build_data/08_build_qc_objects": {
+      "time": "08:00:00",
+      "cpus_per_task": 8,
+      "mem": "64G"
+    },
+    "10_build_data/09_build_da": {
+      "time": "36:00:00",
+      "cpus_per_task": 16,
+      "mem": "192G"
+    },
+    "10_build_data/10_build_da_assemble": {
+      "time": "04:00:00",
+      "cpus_per_task": 4,
+      "mem": "64G"
+    },
+    "10_build_data/11_build_sum_stats": {
+      "time": "08:00:00",
+      "cpus_per_task": 8,
+      "mem": "64G"
+    },
+    "10_build_data/12_build_camera_results": {
+      "time": "04:00:00",
+      "cpus_per_task": 4,
+      "mem": "32G"
+    },
+    "10_build_data/13_build_fcm": {
+      "time": "04:00:00",
+      "cpus_per_task": 4,
+      "mem": "32G"
+    },
+    "10_build_data/14_build_utoronto_tfs": {
+      "time": "02:00:00",
+      "cpus_per_task": 2,
+      "mem": "16G"
+    },
+    "10_build_data/15_build_ptmsea_input": {
+      "time": "02:00:00",
+      "cpus_per_task": 2,
+      "mem": "32G"
+    },
+    "10_build_data/16_build_scion": {
+      "time": "96:00:00",
+      "cpus_per_task": 12,
+      "mem": "96G"
+    },
+
+    "20_upload_bucket/01_snapshot_buckets": {
+      "time": "04:00:00",
+      "cpus_per_task": 2,
+      "mem": "16G"
+    },
+    "20_upload_bucket/02_seed_staging": {
+      "time": "12:00:00",
+      "cpus_per_task": 4,
+      "mem": "16G"
+    },
+    "20_upload_bucket/03_diff_freeze_vs_staging": {
+      "time": "04:00:00",
+      "cpus_per_task": 2,
+      "mem": "32G"
+    },
+    "20_upload_bucket/04_upload_to_staging": {
+      "time": "12:00:00",
+      "cpus_per_task": 4,
+      "mem": "16G"
+    },
+    "20_upload_bucket/05_validate_structure": {
+      "time": "02:00:00",
+      "cpus_per_task": 2,
+      "mem": "16G"
+    }
+  }
+}

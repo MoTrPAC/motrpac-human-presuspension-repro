@@ -1,0 +1,2 @@
+Dataset	tissue	ome	Sample	PC
+t11-adipose,metab-u-lrppos,georgia	adipose	metab-u-lrppos	11259021104	PC1, PC2

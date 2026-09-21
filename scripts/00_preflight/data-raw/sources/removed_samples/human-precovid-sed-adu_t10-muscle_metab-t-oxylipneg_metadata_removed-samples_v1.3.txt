@@ -1,0 +1,8 @@
+Dataset	tissue	ome	Sample	PC
+t10-muscle,metab-t-oxylipneg,emory	muscle	metab-t-oxylipneg	11033011006	PC1
+t10-muscle,metab-t-oxylipneg,emory	muscle	metab-t-oxylipneg	11167031006	PC2
+t10-muscle,metab-t-oxylipneg,emory	muscle	metab-t-oxylipneg	11251011006	PC3
+t10-muscle,metab-t-oxylipneg,emory	muscle	metab-t-oxylipneg	11257011006	PC3
+t10-muscle,metab-t-oxylipneg,emory	muscle	metab-t-oxylipneg	11330011006	PC2
+t10-muscle,metab-t-oxylipneg,emory	muscle	metab-t-oxylipneg	11407041006	PC1
+t10-muscle,metab-t-oxylipneg,emory	muscle	metab-t-oxylipneg	11431031006	PC2

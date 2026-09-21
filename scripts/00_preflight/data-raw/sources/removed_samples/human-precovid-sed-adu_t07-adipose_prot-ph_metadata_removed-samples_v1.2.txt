@@ -1,0 +1,5 @@
+vialLabel	reason
+11285020708	outlier, rii ratio distribution plots due to blood contamination
+11246020712	outlier, rii ratio distribution plots due to blood contamination
+11246010719	outlier, rii ratio distribution plots due to blood contamination
+11330020719	outlier, rii ratio distribution plots due to blood contamination

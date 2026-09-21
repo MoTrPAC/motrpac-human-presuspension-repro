@@ -1,0 +1,5 @@
+vialLabel	reason
+11009050209	Outlier
+11161050209	Outlier
+11161010209	Outlier
+11067060209	Outlier

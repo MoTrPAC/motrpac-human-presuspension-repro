@@ -1,0 +1,12 @@
+vialLabel	reason
+11203060301	genotype_check
+11203070301	genotype_check,sex-check
+11102010301	genotype_check,sex-check
+11022050301	read_depth<10:8
+11018010301	read_depth<10:6
+11158060301	genotype_check,sex-check
+11158070301	%CHH>2:2,read_depth<10:7
+11281070301	read_depth<10:9
+11088010301	read_depth<10:7
+11088060301	read_depth<10:3
+11088070301	read_depth<10:7

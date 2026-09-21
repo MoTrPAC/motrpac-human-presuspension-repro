@@ -1,0 +1,16 @@
+# The build needs exactly two things from this repo: the package manifest and
+# docker/. Everything else is working data — scripts/*/data-raw/sources/ alone is
+# ~4.3 GB (MethylCap matrices, the Ensembl v105 sqlite), and sending it to the
+# daemon would make every build crawl for no reason.
+#
+# Whitelist style: ignore everything, then un-ignore the two paths. A blocklist
+# would silently start shipping gigabytes the first time someone adds a new
+# sources/ directory.
+*
+
+!docker/
+!docs/environment/package_versions.tsv
+
+# Belt and braces, in case the whitelist above is ever loosened.
+**/.DS_Store
+**/.git

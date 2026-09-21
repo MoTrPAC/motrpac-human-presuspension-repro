@@ -1,0 +1,4 @@
+"sample"	"Tissue"	"reason"
+"11237010601"	"Muscle"	"outlier, PC1.470.57"
+"11321030601"	"Muscle"	"outlier, PC1.473.59"
+"11016030601"	"Muscle"	"outlier, PC1.478.71"

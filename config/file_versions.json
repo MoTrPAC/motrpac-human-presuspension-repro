@@ -1,0 +1,729 @@
+{
+  "_comment": [
+    "Per-file freeze versions for the NEXT staging-bucket upload: each entry names the",
+    "version a file WILL carry when this pipeline writes it.",
+    "",
+    "This map is hand-maintained and authoritative. It is NOT a generated mirror of the",
+    "staging bucket: the entries were seeded once from a listing of seeded_from_bucket and",
+    "are edited by hand from there on, so they can and should differ from what that bucket",
+    "holds today. Do not regenerate this file from a bucket listing -- that would discard",
+    "every deliberate bump and every why_bumped note.",
+    "",
+    "The collection is deliberately NOT uniformly versioned. A file's version is the last",
+    "collection release in which its CONTENT changed: a file regenerated without a content",
+    "change keeps its existing version, and only a file whose content actually changes is",
+    "bumped to NEW_VERSION (config/pipeline.env). That is why no single NEW_VERSION can",
+    "name every file, and why versions are looked up here instead of hardcoded at call",
+    "sites. To ship a changed file at a new version, bump its entry here -- this map is the",
+    "only place a version is decided.",
+    "",
+    "SHAPE. files is a tree keyed the way the freeze filename is built:",
+    "  files[tissue_code][ome][data_category][data_details] -> entry",
+    "which is the same nesting load_qc()/load_differential_analysis() return, one level",
+    "deeper. The filename is the path: stem_prefix, then the four keys joined by '_', then",
+    "_v<version> and .<ext> -- exactly what write_with_path_name() composes. A file whose",
+    "name stops at data_category (the prot qc-report HTMLs) is keyed under the reserved",
+    "data_details '_none'; no real data_details starts with '_', so the two never collide.",
+    "",
+    "ENTRY. version is the release the file ships at. ext is its extension without the dot.",
+    "why_bumped is a HAND-WRITTEN note saying what content change earned the current",
+    "version -- one line, empty when nobody has written one. Nothing reads it: it is there",
+    "so a bump carries its reason next to it instead of only in a commit message. Fill it",
+    "in the same edit that changes version.",
+    "",
+    "tissue REPEATS the tissue_code the entry is nested under. It is redundant by",
+    "construction and nothing reads it -- the tree path is still the authority, and a",
+    "resources/ entry has none. It is written into every entry so a line deep in the file",
+    "says which tissue it belongs to without scrolling back to the enclosing key. Because",
+    "it is a copy, it can drift: when moving an entry between tissues, change both.",
+    "",
+    "resources holds the files under the bucket's resources/ tier, whose names follow no",
+    "tissue/ome convention and so have no place in the tree. Keys are the version-stripped",
+    "basename without its extension.",
+    "",
+    "unversioned_files is empty and stays empty: every file in the collection carries a",
+    "_v<version> token as of v2.0. It is kept as the place to declare an exception if one",
+    "is ever granted again.",
+    "",
+    "version_counts tallies files + resources below as a self-check on edits; it is not a",
+    "census of the bucket."
+  ],
+  "seeded_from_bucket": "gs://pre-cawg/staging_20260720",
+  "seeded_on": "2026-07-29",
+  "cross_check": "gsutil ls 'gs://pre-cawg/staging_20260720/**' | grep -v '/$'   then DIFF the _v<ver> suffixes against this map. Entries that differ are either a pending bump (expected) or a stale entry (fix by hand); never overwrite this file with the listing.",
+  "stem_prefix": "human-precovid-sed-adu",
+  "version_counts": {
+    "1.2": 29,
+    "1.3": 79,
+    "2.0": 78,
+    "2.1": 45,
+    "2.2": 1
+  },
+  "unversioned_files": [],
+  "files": {
+    "all": {
+      "transcript-rna-seq": {
+        "qc-report": {
+          "_none": {"tissue": "all", "version": "1.2", "ext": "html", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        }
+      }
+    },
+    "t02-plasma": {
+      "metab-t-amines": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-t-clinical": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "clinical chemistry structure update"}
+        },
+        "qc-norm": {
+          "absolute": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "regenerated after bug fixes to the matching process for qc-norm files"}
+        }
+      },
+      "metab-t-conv": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-t-imm-crt": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-t-oxylipneg": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-t-tca": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-hilicpos": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-ionpneg": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-lrpneg": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-lrppos": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-rpneg": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-rppos": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t02-plasma", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "prot-clinical": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "clinical chemistry structure update"}
+        },
+        "qc-norm": {
+          "absolute": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "regenerated after bug fixes to the matching process for qc-norm files"}
+        }
+      },
+      "prot-ol": {
+        "da": {
+          "dream-acute": {"tissue": "t02-plasma", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t02-plasma", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"},
+          "samples": {"tissue": "t02-plasma", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t02-plasma", "version": "2.0", "ext": "txt", "why_bumped": "regenerated after bug fixes to the matching process for qc-norm files"}
+        }
+      }
+    },
+    "t03-edta": {
+      "epigen-methylcap-seq": {
+        "da": {
+          "malax-glmm-acute": {"tissue": "t03-edta", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t03-edta", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t03-edta", "version": "2.0", "ext": "txt", "why_bumped": "participant identifier, demographic and study-design columns removed"},
+          "samples": {"tissue": "t03-edta", "version": "2.0", "ext": "txt", "why_bumped": "making consistent metadata structure"}
+        },
+        "qc-norm": {
+          "beta-values": {"tissue": "t03-edta", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        }
+      }
+    },
+    "t04-blood-rna": {
+      "transcript-rna-seq": {
+        "da": {
+          "dream-acute": {"tissue": "t04-blood-rna", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t04-blood-rna", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t04-blood-rna", "version": "2.0", "ext": "txt", "why_bumped": "sample mislabel checks"},
+          "samples": {"tissue": "t04-blood-rna", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        },
+        "qc-norm": {
+          "log-cpm": {"tissue": "t04-blood-rna", "version": "2.0", "ext": "txt", "why_bumped": "regenerated after bug fixes to the matching process for qc-norm files"}
+        }
+      }
+    },
+    "t05-human-pbmc": {
+      "epigen-atac-seq": {
+        "qc-report": {
+          "_none": {"tissue": "t05-human-pbmc", "version": "1.2", "ext": "html", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        }
+      }
+    },
+    "t05-pbmc": {
+      "epigen-atac-seq": {
+        "da": {
+          "dream-acute": {"tissue": "t05-pbmc", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t05-pbmc", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t05-pbmc", "version": "2.0", "ext": "txt", "why_bumped": "sample mislabel checks"},
+          "samples": {"tissue": "t05-pbmc", "version": "2.0", "ext": "txt", "why_bumped": "sample mislabel checks"}
+        },
+        "qc-norm": {
+          "log-cpm": {"tissue": "t05-pbmc", "version": "2.0", "ext": "txt", "why_bumped": "regenerated after bug fixes to the matching process for qc-norm files"}
+        }
+      }
+    },
+    "t06-human-muscle": {
+      "epigen-atac-seq": {
+        "qc-report": {
+          "_none": {"tissue": "t06-human-muscle", "version": "1.2", "ext": "html", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        }
+      }
+    },
+    "t06-muscle": {
+      "epigen-atac-seq": {
+        "da": {
+          "dream-acute": {"tissue": "t06-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "sample mislabel checks"},
+          "samples": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "sample mislabel checks"}
+        },
+        "qc-norm": {
+          "log-cpm": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "regenerated after bug fixes to the matching process for qc-norm files"}
+        }
+      },
+      "epigen-methylcap-seq": {
+        "da": {
+          "malax-glmm-acute": {"tissue": "t06-muscle", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "making consistent metadata structure"}
+        },
+        "qc-norm": {
+          "beta-values": {"tissue": "t06-muscle", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        }
+      },
+      "metab-u-hilicpos": {
+        "da": {
+          "dream-acute": {"tissue": "t06-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t06-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t06-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t06-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-ionpneg": {
+        "da": {
+          "dream-acute": {"tissue": "t06-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t06-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t06-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-rpneg": {
+        "da": {
+          "dream-acute": {"tissue": "t06-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t06-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t06-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-rppos": {
+        "da": {
+          "dream-acute": {"tissue": "t06-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t06-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t06-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "transcript-rna-seq": {
+        "da": {
+          "dream-acute": {"tissue": "t06-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t06-muscle", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"},
+          "samples": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "adding one missing sample metadata"}
+        },
+        "qc-norm": {
+          "log-cpm": {"tissue": "t06-muscle", "version": "2.0", "ext": "txt", "why_bumped": "regenerated after bug fixes to the matching process for qc-norm files"}
+        }
+      }
+    },
+    "t07-adipose": {
+      "prot-ph": {
+        "da": {
+          "dream-acute": {"tissue": "t07-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "imputed": {
+          "log2-mn": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t07-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "qc-report": {"tissue": "t07-adipose", "version": "1.2", "ext": "html", "why_bumped": "baseline version; last updated after one subject's BMI was updated"},
+          "removed-samples": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"},
+          "samples": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        },
+        "qc-norm": {
+          "log2-mn": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        }
+      },
+      "prot-pr": {
+        "da": {
+          "dream-acute": {"tissue": "t07-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "imputed": {
+          "log2-mn": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t07-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "qc-report": {"tissue": "t07-adipose", "version": "1.2", "ext": "html", "why_bumped": "baseline version; last updated after one subject's BMI was updated"},
+          "removed-samples": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"},
+          "samples": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        },
+        "qc-norm": {
+          "log2-mn": {"tissue": "t07-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        }
+      }
+    },
+    "t10-muscle": {
+      "metab-t-amines": {
+        "da": {
+          "dream-acute": {"tissue": "t10-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-t-nuc": {
+        "da": {
+          "dream-acute": {"tissue": "t10-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-t-oxylipneg": {
+        "da": {
+          "dream-acute": {"tissue": "t10-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-t-tca": {
+        "da": {
+          "dream-acute": {"tissue": "t10-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-lrpneg": {
+        "da": {
+          "dream-acute": {"tissue": "t10-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-lrppos": {
+        "da": {
+          "dream-acute": {"tissue": "t10-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t10-muscle", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "prot-ph": {
+        "da": {
+          "dream-acute": {"tissue": "t10-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "imputed": {
+          "log2-mn": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "updates to prot-pr/ph qc-norm files"}
+        },
+        "metadata": {
+          "features": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t10-muscle", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        },
+        "qc-norm": {
+          "log2-mn": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "regenerated after bug fixes to the matching process for qc-norm files"}
+        },
+        "qc-report": {
+          "_none": {"tissue": "t10-muscle", "version": "1.2", "ext": "html", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        }
+      },
+      "prot-pr": {
+        "da": {
+          "dream-acute": {"tissue": "t10-muscle", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "imputed": {
+          "log2-mn": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "updates to prot-pr/ph qc-norm files"}
+        },
+        "metadata": {
+          "features": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t10-muscle", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        },
+        "qc-norm": {
+          "log2-mn": {"tissue": "t10-muscle", "version": "2.0", "ext": "txt", "why_bumped": "regenerated after bug fixes to the matching process for qc-norm files"}
+        },
+        "qc-report": {
+          "_none": {"tissue": "t10-muscle", "version": "1.2", "ext": "html", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        }
+      }
+    },
+    "t11-adipose": {
+      "epigen-methylcap-seq": {
+        "da": {
+          "malax-glmm-acute": {"tissue": "t11-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "making consistent metadata structure"}
+        },
+        "qc-norm": {
+          "beta-values": {"tissue": "t11-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        }
+      },
+      "metab-t-acoa": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-t-amines": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-t-ka": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-t-nuc": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-t-oxylipneg": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-t-tca": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "regenerated after bug fixes to the matching process for qc-norm files"}
+        }
+      },
+      "metab-u-hilicpos": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-ionpneg": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-lrpneg": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-lrppos": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"},
+          "samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-rpneg": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "metab-u-rppos": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "samples": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        },
+        "qc-norm": {
+          "log2": {"tissue": "t11-adipose", "version": "1.3", "ext": "txt", "why_bumped": "changed following the metabolomics outlier detection update"}
+        }
+      },
+      "transcript-rna-seq": {
+        "da": {
+          "dream-acute": {"tissue": "t11-adipose", "version": "2.1", "ext": "txt", "why_bumped": "manually calculating confidence intervals - labeled CI.L_calculated/CI.R_calculated"}
+        },
+        "metadata": {
+          "features": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "feature metadata patch to match the feature-to-gene mapping updates"},
+          "removed-samples": {"tissue": "t11-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"},
+          "samples": {"tissue": "t11-adipose", "version": "1.2", "ext": "txt", "why_bumped": "baseline version; last updated after one subject's BMI was updated"}
+        },
+        "qc-norm": {
+          "log-cpm": {"tissue": "t11-adipose", "version": "2.0", "ext": "txt", "why_bumped": "regenerated after bug fixes to the matching process for qc-norm files"}
+        }
+      }
+    }
+  },
+  "resources": {
+    "motrpac-mappings-human-feature-to-gene": {"version": "2.2", "ext": "txt", "why_bumped": "gained custom_annotation and relationship_to_gene, which step 07 now keeps rather than dropping, and does not carry confident_site, a per-tissue flag this object has no tissue column to qualify (read *_PROT_PH_QC$feature_metadata instead); content differs from the file currently in the bucket"},
+    "motrpac_human-precovid_1kg_pca": {"version": "2.0", "ext": "csv", "why_bumped": "published unversioned through v1.4; versioned from v2.0 on so every file in the collection carries a release stamp"},
+    "motrpac_human-precovid_metabolite-cv": {"version": "2.0", "ext": "txt", "why_bumped": "updated refmet names"},
+    "motrpac_human-precovid_refmet-map": {"version": "2.0", "ext": "txt", "why_bumped": "published unversioned through v1.4; versioned from v2.0 on so every file in the collection carries a release stamp"},
+    "motrpac_human-precovid_refmet-map_provenance": {"version": "2.0", "ext": "json", "why_bumped": "published unversioned through v1.4; versioned from v2.0 on so every file in the collection carries a release stamp"},
+    "txdb_hsapiens_ensembl_v105": {"version": "2.0", "ext": "sqlite", "why_bumped": "published unversioned through v1.4; versioned from v2.0 on so every file in the collection carries a release stamp"}
+  }
+}

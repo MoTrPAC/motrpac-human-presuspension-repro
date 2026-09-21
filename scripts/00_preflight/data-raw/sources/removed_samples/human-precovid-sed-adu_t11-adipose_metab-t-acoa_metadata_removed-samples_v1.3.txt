@@ -1,0 +1,8 @@
+Dataset	tissue	ome	Sample	PC
+t11-adipose,metab-t-acoa,duke	adipose	metab-t-acoa	11022011111	PC3
+t11-adipose,metab-t-acoa,duke	adipose	metab-t-acoa	11061021111	PC3
+t11-adipose,metab-t-acoa,duke	adipose	metab-t-acoa	11169011111	PC1
+t11-adipose,metab-t-acoa,duke	adipose	metab-t-acoa	11284021111	PC1
+t11-adipose,metab-t-acoa,duke	adipose	metab-t-acoa	11290021111	PC1
+t11-adipose,metab-t-acoa,duke	adipose	metab-t-acoa	11330011111	PC1
+t11-adipose,metab-t-acoa,duke	adipose	metab-t-acoa	11442011111	PC1

@@ -1,0 +1,2 @@
+Dataset	tissue	ome	Sample	PC
+t10-muscle,metab-t-nuc,duke	muscle	metab-t-nuc	11307021004	PC1

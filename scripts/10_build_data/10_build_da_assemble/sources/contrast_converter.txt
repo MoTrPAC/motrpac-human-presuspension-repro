@@ -1,0 +1,34 @@
+contrast	contrast_short
+group_timepointADUEndur.during_20_min - group_timepointADUEndur.pre_exercise - group_timepointADUControl.during_20_min + group_timepointADUControl.pre_exercise	Endur.during_20_min - Control.during_20_min (delta-delta)
+group_timepointADUEndur.during_40_min - group_timepointADUEndur.pre_exercise - group_timepointADUControl.during_40_min + group_timepointADUControl.pre_exercise	Endur.during_40_min - Control.during_40_min (delta-delta)
+group_timepointADUEndur.post_10_min - group_timepointADUEndur.pre_exercise - group_timepointADUControl.post_10_min + group_timepointADUControl.pre_exercise	Endur.post_10_min - Control.post_10_min (delta-delta)
+group_timepointADUEndur.post_15_30_45_min - group_timepointADUEndur.pre_exercise - group_timepointADUControl.post_15_30_45_min + group_timepointADUControl.pre_exercise	Endur.post_15_30_45_min - Control.post_15_30_45_min (delta-delta)
+group_timepointADUEndur.post_3.5_4_hr - group_timepointADUEndur.pre_exercise - group_timepointADUControl.post_3.5_4_hr + group_timepointADUControl.pre_exercise	Endur.post_3.5_4_hr - Control.post_3.5_4_hr (delta-delta)
+group_timepointADUEndur.post_24_hr - group_timepointADUEndur.pre_exercise - group_timepointADUControl.post_24_hr + group_timepointADUControl.pre_exercise	Endur.post_24_hr - Control.post_24_hr (delta-delta)
+group_timepointADUResist.post_10_min - group_timepointADUResist.pre_exercise - group_timepointADUControl.post_10_min + group_timepointADUControl.pre_exercise	Resist.post_10_min - Control.post_10_min (delta-delta)
+group_timepointADUResist.post_15_30_45_min - group_timepointADUResist.pre_exercise - group_timepointADUControl.post_15_30_45_min + group_timepointADUControl.pre_exercise	Resist.post_15_30_45_min - Control.post_15_30_45_min (delta-delta)
+group_timepointADUResist.post_3.5_4_hr - group_timepointADUResist.pre_exercise - group_timepointADUControl.post_3.5_4_hr + group_timepointADUControl.pre_exercise	Resist.post_3.5_4_hr - Control.post_3.5_4_hr (delta-delta)
+group_timepointADUResist.post_24_hr - group_timepointADUResist.pre_exercise - group_timepointADUControl.post_24_hr + group_timepointADUControl.pre_exercise	Resist.post_24_hr - Control.post_24_hr (delta-delta)
+group_timepointADUEndur.during_20_min - group_timepointADUEndur.pre_exercise	Endur.during_20_min - Endur.pre_exercise
+group_timepointADUEndur.during_40_min - group_timepointADUEndur.pre_exercise	Endur.during_40_min - Endur.pre_exercise
+group_timepointADUEndur.post_10_min - group_timepointADUEndur.pre_exercise	Endur.post_10_min - Endur.pre_exercise
+group_timepointADUEndur.post_15_30_45_min - group_timepointADUEndur.pre_exercise	Endur.post_15_30_45_min - Endur.pre_exercise
+group_timepointADUEndur.post_3.5_4_hr - group_timepointADUEndur.pre_exercise	Endur.post_3.5_4_hr - Endur.pre_exercise
+group_timepointADUEndur.post_24_hr - group_timepointADUEndur.pre_exercise	Endur.post_24_hr - Endur.pre_exercise
+group_timepointADUResist.post_10_min - group_timepointADUResist.pre_exercise	Resist.post_10_min - Resist.pre_exercise
+group_timepointADUResist.post_15_30_45_min - group_timepointADUResist.pre_exercise	Resist.post_15_30_45_min - Resist.pre_exercise
+group_timepointADUResist.post_3.5_4_hr - group_timepointADUResist.pre_exercise	Resist.post_3.5_4_hr - Resist.pre_exercise
+group_timepointADUResist.post_24_hr - group_timepointADUResist.pre_exercise	Resist.post_24_hr - Resist.pre_exercise
+group_timepointADUEndur.post_10_min - group_timepointADUEndur.pre_exercise - group_timepointADUResist.post_10_min + group_timepointADUResist.pre_exercise	Endur.post_10_min - Resist.post_10_min (delta-delta)
+group_timepointADUEndur.post_15_30_45_min - group_timepointADUEndur.pre_exercise - group_timepointADUResist.post_15_30_45_min + group_timepointADUResist.pre_exercise	Endur.post_15_30_45_min - Resist.post_15_30_45_min (delta-delta)
+group_timepointADUEndur.post_3.5_4_hr - group_timepointADUEndur.pre_exercise - group_timepointADUResist.post_3.5_4_hr + group_timepointADUResist.pre_exercise	Endur.post_3.5_4_hr - Resist.post_3.5_4_hr (delta-delta)
+group_timepointADUEndur.post_24_hr - group_timepointADUEndur.pre_exercise - group_timepointADUResist.post_24_hr + group_timepointADUResist.pre_exercise	Endur.post_24_hr - Resist.post_24_hr (delta-delta)
+group_timepointADUEndur.pre_exercise - group_timepointADUResist.pre_exercise	Endur.pre_exercise - Resist.pre_exercise
+group_timepointADUEndur.pre_exercise - group_timepointADUControl.pre_exercise	Endur.pre_exercise - Control.pre_exercise
+group_timepointADUResist.pre_exercise - group_timepointADUControl.pre_exercise	Resist.pre_exercise - Control.pre_exercise
+group_timepointADUControl.during_20_min - group_timepointADUControl.pre_exercise	Control.during_20_min - Control.pre_exercise
+group_timepointADUControl.during_40_min - group_timepointADUControl.pre_exercise	Control.during_40_min - Control.pre_exercise
+group_timepointADUControl.post_10_min - group_timepointADUControl.pre_exercise	Control.post_10_min - Control.pre_exercise
+group_timepointADUControl.post_15_30_45_min - group_timepointADUControl.pre_exercise	Control.post_15_30_45_min - Control.pre_exercise
+group_timepointADUControl.post_3.5_4_hr - group_timepointADUControl.pre_exercise	Control.post_3.5_4_hr - Control.pre_exercise
+group_timepointADUControl.post_24_hr - group_timepointADUControl.pre_exercise	Control.post_24_hr - Control.pre_exercise

@@ -1,0 +1,10 @@
+Dataset	tissue	ome	Sample	PC
+t11-adipose,metab-t-tca,mayo	adipose	metab-t-tca	11071011107	PC2
+t11-adipose,metab-t-tca,mayo	adipose	metab-t-tca	11071021107	PC2
+t11-adipose,metab-t-tca,mayo	adipose	metab-t-tca	11115011107	PC2
+t11-adipose,metab-t-tca,mayo	adipose	metab-t-tca	11163011107	PC2
+t11-adipose,metab-t-tca,mayo	adipose	metab-t-tca	11163021107	PC2
+t11-adipose,metab-t-tca,mayo	adipose	metab-t-tca	11251011107	PC2
+t11-adipose,metab-t-tca,mayo	adipose	metab-t-tca	11251021107	PC2
+t11-adipose,metab-t-tca,mayo	adipose	metab-t-tca	11433021107	PC1, PC3
+t11-adipose,metab-t-tca,mayo	adipose	metab-t-tca	11434021107	PC2

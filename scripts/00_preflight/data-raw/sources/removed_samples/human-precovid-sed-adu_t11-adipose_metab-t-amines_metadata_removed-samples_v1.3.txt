@@ -1,0 +1,4 @@
+Dataset	tissue	ome	Sample	PC
+t11-adipose,metab-t-amines,mayo	adipose	metab-t-amines	11097011107	PC1
+t11-adipose,metab-t-amines,mayo	adipose	metab-t-amines	11200011107	PC1
+t11-adipose,metab-t-amines,mayo	adipose	metab-t-amines	11200021107	PC1

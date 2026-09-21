@@ -1,0 +1,59 @@
+# motrpac-human-presuspension-repro
+#
+# This repo is private and its readers hold consortium data access, so the
+# vendored inputs under sources/ and prebuilt/ are committed. Three things are
+# still kept out: pipeline outputs, run artifacts, and the handful of staged
+# inputs that exceed GitHub's 100 MB per-file limit.
+
+# ---- Run artifacts ---------------------------------------------------------
+logs/
+.stamps/
+staging/
+# Also without the trailing slash. A pattern ending in "/" matches DIRECTORIES ONLY, so a
+# symlink of the same name slips past it and becomes committable. Worktrees reach these build
+# dirs by symlink, so the no-slash form matters.
+staging
+
+# ---- Build outputs ---------------------------------------------------------
+# Rebuilt by `make data-objects` and `make data`. Committing them would let the
+# checked-in copy drift from what the pipeline produces.
+scripts/**/data/
+# no-slash form, for the same reason as `staging` above
+scripts/**/data
+scripts/00_preflight/output/
+# Freeze-comparison run against v1.3: ~9.9 GB of generated reports, 12 of them
+# over GitHub's 100 MB per-file limit (two ATAC dream-acute diffs are ~1.5 GB
+# each, four accessor .rds dumps 1.1–1.5 GB). Produced by run_diff.sh inside
+# that directory, which the pattern also covers.
+docs/diff_to_v1.3/
+# no-slash form, for the same reason as `staging` above
+docs/diff_to_v1.3
+
+# ---- Staged inputs over GitHub's 100 MB per-file limit ---------------------
+# MethylCap beta-values (3 × 0.9–1.5 GB) and DA tables (3 × 0.7–1.2 GB) from
+# Yongchao Ge's external pipeline; fetch with `make sources`.
+**/sources/methylcap_qc_norm/
+**/sources/methylcap_da/
+# ATAC log-cpm matrices (2 × ~0.5 GB) and dream DA tables (2 × ~2.3 GB), staged
+# from the production bucket under RERUN_ATAC=FALSE instead of being refit; same
+# copy_from_source.sh groups as the methylcap pair above, so `make sources` fetches
+# them too.
+**/sources/atac_qc_norm/
+**/sources/atac_da/
+# Ensembl v105 TxDb (175 MB); rebuild with sources/ensembl_v105/build_ensembl_v105_cache.R.
+**/sources/ensembl_v105/txdb_hsapiens_ensembl_v105.sqlite
+
+# ---- Tooling ----------------------------------------------------------------
+# Claude Code's per-repo state: settings, local permissions, and the worktrees it
+# creates under .claude/worktrees/. Machine-local, not part of the pipeline.
+.claude/
+
+# ---- OS / editor / R session ------------------------------------------------
+.DS_Store
+.Rhistory
+.RData
+.Rproj.user/
+.Renviron
+*~
+.vscode/
+.idea/

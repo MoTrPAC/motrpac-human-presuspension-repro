@@ -1,0 +1,3 @@
+Dataset	tissue	ome	Sample	PC
+t06-muscle,metab-u-hilicpos,broad	muscle	metab-u-hilicpos	11016030604	PC3
+t06-muscle,metab-u-hilicpos,broad	muscle	metab-u-hilicpos	11211010604	PC3

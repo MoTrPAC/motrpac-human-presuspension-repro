@@ -1,0 +1,62 @@
+# Run this repo inside the image built from docs/environment/package_versions.tsv.
+#
+#   make docker-build
+#   docker compose run --rm precovid make preflight
+#
+# Scope: this repo and its R environment. The image reproduces the package
+# versions installed on the machine that generated docs/ENVIRONMENT.md; only this
+# repo is mounted. Sibling repos and consortium data stay outside — see the
+# commented mounts below if a particular stage needs one.
+
+services:
+  precovid:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        R_VERSION: "4.4.1"
+        BIOC_VERSION: "3.20"
+        # The manifest capture date (docs/ENVIRONMENT.md). An earlier snapshot lacks
+        # the recorded cli, rlang, vctrs and six others, so they cannot be pinned.
+        CRAN_SNAPSHOT: "2026-07-30"
+    image: motrpac-human-presuspension-repro:4.4.1
+    working_dir: /github/motrpac-human-presuspension-repro
+
+    environment:
+      # config/pipeline.env derives every repo path from GITHUB_ROOT, so mounting
+      # the parent directory keeps path resolution identical to a native run.
+      GITHUB_ROOT: /github
+      R_LIBS_USER: /local-lib
+      # The reference machine's 10 assumes a 12-core host. Docker Desktop
+      # typically allocates far fewer; override per run if you have given it more.
+      PARALLEL_CORES: "${PARALLEL_CORES:-4}"
+      TZ: "${TZ:-America/Chicago}"
+
+    volumes:
+      # This repo, and nothing else. The parent directory is never mounted, so no
+      # other checkout on the host is visible to the container.
+      #
+      # Read-write, not :ro — the pipeline writes logs/, .stamps/ and staging/.
+      - .:/github/motrpac-human-presuspension-repro
+
+      # Consortium bucket access. `gcloud auth login` on the host; the container
+      # reuses those credentials rather than authenticating separately.
+      - ${HOME}/.config/gcloud:/root/.config/gcloud
+
+      # The only writable R library: the two packages installed from mounted
+      # source trees, and anything FINALIZE=install adds. A named volume so the
+      # ~600 MB MotrpacHumanPreSuspensionData install survives between runs.
+      - precovid-local-lib:/local-lib
+
+      # The pipeline's later stages delegate to R code living in sibling repos.
+      # Those are out of scope for this container by default — the image is the
+      # environment for THIS repo. Uncomment individually, and only for a run that
+      # actually needs them.
+      # - ../MotrpacHumanPreSuspensionData:/github/MotrpacHumanPreSuspensionData
+      # - ../MotrpacHumanPreSuspensionAnalysis:/github/MotrpacHumanPreSuspensionAnalysis
+      # - ../precovid-analyses:/github/precovid-analyses
+
+    command: ["bash"]
+
+volumes:
+  precovid-local-lib:

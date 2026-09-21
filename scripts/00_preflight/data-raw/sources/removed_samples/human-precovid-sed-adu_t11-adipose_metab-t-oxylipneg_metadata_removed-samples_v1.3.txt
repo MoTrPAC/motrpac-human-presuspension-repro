@@ -1,0 +1,9 @@
+Dataset	tissue	ome	Sample	PC
+t11-adipose,metab-t-oxylipneg,emory	adipose	metab-t-oxylipneg	11053021108	PC1
+t11-adipose,metab-t-oxylipneg,emory	adipose	metab-t-oxylipneg	11065021108	PC1
+t11-adipose,metab-t-oxylipneg,emory	adipose	metab-t-oxylipneg	11200011108	PC2
+t11-adipose,metab-t-oxylipneg,emory	adipose	metab-t-oxylipneg	11210021108	PC1
+t11-adipose,metab-t-oxylipneg,emory	adipose	metab-t-oxylipneg	11254011108	PC1
+t11-adipose,metab-t-oxylipneg,emory	adipose	metab-t-oxylipneg	11315011108	PC1
+t11-adipose,metab-t-oxylipneg,emory	adipose	metab-t-oxylipneg	11355021108	PC1
+t11-adipose,metab-t-oxylipneg,emory	adipose	metab-t-oxylipneg	11357011108	PC2
