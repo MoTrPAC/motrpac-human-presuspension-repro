@@ -93,6 +93,35 @@ the 7,865 sites shared by muscle and adipose disagree. **Read
 `*_PROT_PH_QC$feature_metadata` for it.** Full reasoning in
 `15_build_ptmsea_input/README.md`.
 
+## Vendor annotation on the prot-ph / prot-pr features (v2.1)
+
+The same `select()` that dropped `confident_site` also dropped the rest of the vendor
+annotation sitting on the raw `ratio-results` `rdesc`. All of it is kept from v2.1 on:
+
+- **prot-ph** — `confident_score` (the site-localization score `confident_site` thresholds at
+  17: TRUE min 17.005 / FALSE max 16.998 in adipose, 17.001 / 16.999 in muscle),
+  `ptm_score` (the site identification score), `redundant_ids` (the protein group —
+  the indistinguishable accessions for the site, which differ from `protein_id` for 14,499 of
+  35,316 adipose and 18,424 of 60,207 muscle rows).
+- **prot-pr** — `num_peptides`, `percent_coverage`, `protein_score` (the vendor's
+  identification and coverage metrics for the protein) and `redundant_ids` (differs from
+  `protein_id` for 1,892 of 8,223 adipose and 1,502 of 7,292 muscle rows).
+
+Every one of them is **per tissue**, so they follow `confident_site`: kept in step 06, carried
+into `*_PROT_PH_QC` / `*_PROT_PR_QC` by step 08, and **not** carried into
+`HUMAN_FEATURE_TO_GENE`. Muscle and adipose disagree on 15,825 of 20,664 shared sites for
+`confident_score`, 5,495 of 6,079 shared proteins for `num_peptides`, and 2,162 / 539 for
+`redundant_ids`, so a single value in that map would be a collapse, not a measurement.
+
+`organism_name` and `is_contaminant` stay dropped: both are constant after the contaminant
+filter. The vendor's own `gene_symbol` / `entrez_id` also stay dropped — they are overwritten
+by the Ensembl v105 lookup, which is a separate question from this one and is not addressed
+here.
+
+Required columns are asserted per ome in `06_generate_qc_norm/qc_norm_freeze_tests.R` and in
+`20_upload_bucket/lib/expected_columns.R`, so a later edit to either `.annotate_*()` cannot
+drop them again silently.
+
 ## `custom_annotation` / `relationship_to_gene` (epigen)
 
 Step 06's `.annotate_atac_features()` and `.annotate_methylcap_features()` write both peak

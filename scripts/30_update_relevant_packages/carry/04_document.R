@@ -209,9 +209,11 @@ COLUMN_DOC <- c(
   kegg_id = "factor; KEGG identifier, from the pinned RefMet/KEGG snapshot.",
   flanking_sequence = "factor; flanking sequence. Only applicable if assay is \"prot-ph\"."
 )
-# confident_site is not a column of this object: it is measured per tissue and this table is
-# keyed on (assay, feature_id) with no tissue column. It lives on
-# \code{*_PROT_PH_QC$feature_metadata} in MotrpacHumanPreSuspensionData.
+# The prot-ph / prot-pr per-tissue columns are not columns of this object: confident_site,
+# confident_score, ptm_score, redundant_ids, num_peptides, percent_coverage and protein_score
+# are all measured per tissue and this table is keyed on (assay, feature_id) with no tissue
+# column. They live on \code{*_PROT_PH_QC$feature_metadata} and
+# \code{*_PROT_PR_QC$feature_metadata} in MotrpacHumanPreSuspensionData.
 
 h2g_path <- file.path(root("analysis"), "data", "HUMAN_FEATURE_TO_GENE.rda")
 if (file.exists(h2g_path)) {

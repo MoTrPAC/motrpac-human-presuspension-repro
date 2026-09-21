@@ -12,24 +12,24 @@ package, and everything that *can* be released publicly (aggregate results, all 
 code) is kept clear of them.
 
 ```
-                MoTrPAC BIC — consortium GCS buckets
-                     (raw assay data, gated)
-                                │
-                         motrpac-human-presuspension-repro
-        normalizes omics data, applies statistical models,
-        builds every data object, versions it, uploads it,
-                and carries it into both packages
-                                │
-              ┌─────────────────┴─────────────────┐
-              ▼                                   ▼
- MotrpacHumanPreSuspensionData      MotrpacHumanPreSuspensionAnalysis
- subject-level data — access-gated  aggregate results — public
-              └─────────────────┬─────────────────┘
-                                ▼
-               motrpac-human-presuspension-acute
-               manuscript figure code + QC vignettes
-                                ▼
-                          manuscripts
+                  MoTrPAC BIC — consortium GCS buckets
+                        (raw assay data, gated)
+                                   │
+                   motrpac-human-presuspension-repro
+           normalizes omics data, applies statistical models,
+           builds every data object, versions it, uploads it,
+                   and carries it into both packages
+                                   │
+                ┌──────────────────┴──────────────────┐
+                ▼                                     ▼
+  MotrpacHumanPreSuspensionData       MotrpacHumanPreSuspensionAnalysis
+subject-level data — access-gated         aggregate results — public
+                └──────────────────┬──────────────────┘
+                                   ▼
+                   motrpac-human-presuspension-acute
+                 manuscript figure code + QC vignettes
+                                   ▼
+                              manuscripts
 ```
 
 | Repository | What it holds | Access |
