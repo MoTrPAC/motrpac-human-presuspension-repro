@@ -57,8 +57,17 @@ generate_clinical_qc_norm = function(repo_local_dir){
   # metab carries assay = "metab" with the ome in a platform column, matching the other metab
   # platforms (generate_metab_qc_norm.R writes assay = "metab" for every one of them); the prot
   # platforms instead name themselves in assay, so prot-clinical follows prot.
+  # is_named / num_NAs / pct_na_imputed use the other metab platforms' column names and order.
+  # Every analyte is named. Nothing is imputed here, so pct_na_imputed is a note rather than a
+  # percentage.
+  metab_platform_columns = cln_out %>%
+    dplyr::transmute(feature_id,
+                     is_named = TRUE,
+                     num_NAs = rowSums(is.na(dplyr::across(-feature_id))),
+                     pct_na_imputed = "No imputation was performed")
   metab_annotation = .annotate_clinical_metab(cln_out$feature_id[feature_omes == "metab-t-clinical"]) %>%
-    dplyr::mutate(assay = "metab", platform = "metab-t-clinical")
+    dplyr::mutate(assay = "metab", platform = "metab-t-clinical") %>%
+    dplyr::left_join(metab_platform_columns, by = "feature_id")
   all_annotation = dplyr::bind_rows(prot_annotation, metab_annotation)
 
   feature_metadata = cln_out %>%
