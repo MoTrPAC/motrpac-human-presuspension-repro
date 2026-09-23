@@ -154,6 +154,8 @@ EXPECTED_COLUMNS = list(
   # then without (e.g. "qc-norm__metab", "da__metab")
   if (grepl("^metab", ome)) {
     if (data_category == "metadata" && !is.null(data_details)) {
+      key_platform_detail = paste0("metadata__", data_details, "__", ome)
+      if (key_platform_detail %in% names(EXPECTED_COLUMNS)) return(EXPECTED_COLUMNS[[key_platform_detail]])
       key_metab_detail = paste0("metadata__", data_details, "__metab")
       if (key_metab_detail %in% names(EXPECTED_COLUMNS)) return(EXPECTED_COLUMNS[[key_metab_detail]])
     }
