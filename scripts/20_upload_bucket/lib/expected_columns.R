@@ -78,6 +78,10 @@ METADATA_FEATURE_COLS_METAB = c(
   "assay", "feature_id", "refmet_name"
 )
 
+METADATA_FEATURE_COLS_METAB_CLINICAL = c(
+  METADATA_FEATURE_COLS_METAB, "is_named", "num_NAs", "pct_na_imputed"
+)
+
 METADATA_FEATURE_COLS_EPIGEN = c(
   "assay", "feature_id", "gene_symbol", "ensembl_gene", "entrez_gene", "relationship_to_gene"
 )
@@ -89,10 +93,10 @@ METADATA_FEATURE_COLS_EPIGEN = c(
 #
 # 1. The three clinical-chemistry keys are replaced by prot-clinical keys. The clinical
 #    panels are now ordinary omes: metab-t-clinical is picked up by the ^metab fallback
-#    in .get_expected_cols() and needs no key of its own, but prot-clinical does — the
-#    fallback only fires for metab. Its DA table carries AveExpr, degrees_of_freedom and
-#    logLik, so it takes the proteomics schema, not the core one upstream gave
-#    clinical-chemistry.
+#    in .get_expected_cols() for everything but its features file (see 5), but
+#    prot-clinical needs keys of its own — the fallback only fires for metab. Its DA
+#    table carries AveExpr, degrees_of_freedom and logLik, so it takes the proteomics
+#    schema, not the core one upstream gave clinical-chemistry.
 #
 # 2. imputed keys added for prot-pr / prot-ph. The imputed matrices have the same
 #    feature_id + sample-column shape as a qc-norm matrix.
@@ -103,6 +107,10 @@ METADATA_FEATURE_COLS_EPIGEN = c(
 # 4. metadata__features__prot-ph and __prot-pr take their own required sets rather than the
 #    shared proteomics one. Upstream gives all four prot omes METADATA_FEATURE_COLS_PROT, which
 #    asserts nothing about the vendor annotation those two files carry from v2.1 on.
+#
+# 5. metadata__features__metab-t-clinical takes its own required set, with the is_named /
+#    num_NAs / pct_na_imputed columns it carries from v2.1 on. .get_expected_cols() checks a
+#    metab platform's own metadata key before the shared metab one.
 EXPECTED_COLUMNS = list(
 
   # DA schemas
@@ -138,6 +146,7 @@ EXPECTED_COLUMNS = list(
   "metadata__features__prot-ph"            = list(required = METADATA_FEATURE_COLS_PROT_PH,    forbidden = character(0)),
   "metadata__features__prot-ol"            = list(required = METADATA_FEATURE_COLS_PROT,       forbidden = character(0)),
   "metadata__features__prot-clinical"      = list(required = METADATA_FEATURE_COLS_PROT,       forbidden = character(0)),
+  "metadata__features__metab-t-clinical"   = list(required = METADATA_FEATURE_COLS_METAB_CLINICAL, forbidden = character(0)),
   "metadata__features__epigen-atac-seq"      = list(required = METADATA_FEATURE_COLS_EPIGEN, forbidden = character(0)),
   "metadata__features__epigen-methylcap-seq" = list(required = METADATA_FEATURE_COLS_EPIGEN, forbidden = character(0)),
   "metadata__features__metab"              = list(required = METADATA_FEATURE_COLS_METAB,      forbidden = character(0))
@@ -154,6 +163,8 @@ EXPECTED_COLUMNS = list(
   # then without (e.g. "qc-norm__metab", "da__metab")
   if (grepl("^metab", ome)) {
     if (data_category == "metadata" && !is.null(data_details)) {
+      key_platform_detail = paste0("metadata__", data_details, "__", ome)
+      if (key_platform_detail %in% names(EXPECTED_COLUMNS)) return(EXPECTED_COLUMNS[[key_platform_detail]])
       key_metab_detail = paste0("metadata__", data_details, "__metab")
       if (key_metab_detail %in% names(EXPECTED_COLUMNS)) return(EXPECTED_COLUMNS[[key_metab_detail]])
     }

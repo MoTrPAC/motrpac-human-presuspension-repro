@@ -96,6 +96,7 @@ qc_files <- freeze[grepl("qc-norm", basename(freeze))]
 # prot-ph and prot-pr are checked ahead of the generic ^prot branch: each carries the vendor
 # annotation its own select() keeps, which prot-ol and prot-clinical do not have. Asserted so a
 # future edit to .annotate_prot_ph()/.annotate_prot_pr() cannot silently drop them again.
+# metab-t-clinical is checked ahead of ^metab for the is_named / num_NAs / pct_na_imputed its stem adds.
 features_required_for <- function(ome) {
   if (ome == "transcript-rna-seq") return(c("assay", "feature_id", "gene_symbol", "ensembl_gene"))
   if (ome == "prot-ph")            return(c("assay", "feature_id", "gene_symbol", "uniprot",
@@ -105,6 +106,8 @@ features_required_for <- function(ome) {
                                             "num_peptides", "percent_coverage", "protein_score",
                                             "redundant_ids"))
   if (grepl("^prot", ome))         return(c("assay", "feature_id", "gene_symbol", "uniprot"))
+  if (ome == "metab-t-clinical")   return(c("assay", "feature_id", "refmet_name",
+                                            "is_named", "num_NAs", "pct_na_imputed"))
   if (grepl("^metab", ome))        return(c("assay", "feature_id", "refmet_name"))
   if (grepl("^epigen", ome))       return(c("assay", "feature_id", "gene_symbol", "ensembl_gene",
                                             "entrez_gene", "relationship_to_gene"))
