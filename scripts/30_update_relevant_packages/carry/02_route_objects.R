@@ -128,9 +128,9 @@ for (i in which(src$destination %in% names(pkg_dir))) {
 # it. Dropping is the answer when the object would otherwise go out at a version
 # older than everything around it.
 
-ORPHAN_REASON <- c(
-  assay_codes                       = "re-export of MotrpacBicQC::assay_codes; owned by that package"
-)
+# None at present. Analysis 2.0.7 removed the assay_codes re-export; callers read
+# MotrpacBicQC::assay_codes.
+ORPHAN_REASON <- character(0)
 
 # Withdrawn from the release. Three different reasons, and the distinction is
 # worth keeping visible in the NEWS entry.

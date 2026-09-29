@@ -13,7 +13,6 @@
 #
 # Writes:
 #   <out>/document_report.tsv
-#   <out-root>/<Package>/inst/PROVENANCE.tsv
 
 .here <- local({
   a <- commandArgs(trailingOnly = FALSE)
@@ -255,45 +254,17 @@ if (file.exists(h2g_path)) {
   record(rpt, "FAIL", "doc:HUMAN_FEATURE_TO_GENE", "object not present in the test package")
 }
 
-# ---- Provenance: which objects were staged rather than rebuilt ----------------
-# 81 of the objects in these packages are copied verbatim from a source this
-# pipeline does not regenerate, and nothing in either package said which. The
-# table is generated from the routing and the inventory, so it cannot drift from
-# what was actually carried.
-
-inventory_path <- file.path(.here, "..", "..", "..", "docs", "data_objects.tsv")
-inv <- if (file.exists(inventory_path)) read_tsv(inventory_path) else NULL
+# ---- No provenance table in either package ------------------------------------
+# A copy left in the source checkout is removed so it cannot ship.
 
 for (dest in names(PKG)) {
-  # PROVENANCE describes what the package ships, so a withdrawn object has no row.
-  m <- manifest[manifest$destination == dest & manifest$verdict != "REMOVED", , drop = FALSE]
-  if (!nrow(m)) next
-  prov <- data.frame(
-    object = m$object,
-    provenance = ifelse(m$action == "orphan-intended", "carried-forward",
-                 ifelse(is.na(m$source_stage), "carried-forward", "regenerated")),
-    pipeline_step = ifelse(is.na(m$source_stage), "", m$source_stage),
-    verdict = m$verdict,
-    stringsAsFactors = FALSE)
-
-  # The inventory knows which of the regenerated-looking objects are in fact
-  # staged verbatim from a gated or external source.
-  if (!is.null(inv)) {
-    staged <- inv$object[inv$regenerated == "not_yet"]
-    note <- setNames(inv$notes, inv$object)
-    is_staged <- prov$object %in% staged & prov$provenance == "regenerated"
-    prov$provenance[is_staged] <- "staged-verbatim"
-    prov$note <- ifelse(prov$object %in% names(note), note[prov$object], "")
+  prov_path <- file.path(root(dest), "inst", "PROVENANCE.tsv")
+  if (file.exists(prov_path)) {
+    file.remove(prov_path)
+    record(rpt, "PASS", paste0("provenance:", PKG[[dest]]), "removed inst/PROVENANCE.tsv")
   } else {
-    prov$note <- ""
+    record(rpt, "PASS", paste0("provenance:", PKG[[dest]]), "no inst/PROVENANCE.tsv")
   }
-
-  dir.create(file.path(root(dest), "inst"), showWarnings = FALSE, recursive = TRUE)
-  write_tsv(prov[order(prov$object), ], file.path(root(dest), "inst", "PROVENANCE.tsv"))
-  record(rpt, "PASS", paste0("provenance:", PKG[[dest]]),
-         sprintf("%d object(s): %s", nrow(prov),
-                 paste(sprintf("%s=%d", names(table(prov$provenance)), table(prov$provenance)),
-                       collapse = ", ")))
 }
 
 # ---- METABOLOMICS_CVS: say where it is staged from ---------------------------

@@ -43,7 +43,7 @@ from — step 1 records all three.
 | `01_validate_targets.R` | both repos are git checkouts; records branch, SHA, version and uncommitted paths; fails if a version is behind the v1.3 comparison baseline or the build is missing |
 | `02_route_objects.R` | routes every object by `carry/lib/routing.R`, cross-checks against `docs/data_objects.tsv`, and names every packaged object no source produces — as kept or as withdrawn |
 | `03_build_test_packages.R` | assembles each test package; writes every object through `save(compress = "bzip2")` to match how the packages store `data/`; records a content verdict per object |
-| `04_document.R` | regenerates `@format` where the payload changed shape, documents objects new this cycle, removes the documentation of withdrawn ones, writes `inst/PROVENANCE.tsv`, re-roxygenises, and verifies every data object has a man page and no withdrawn object still has one |
+| `04_document.R` | regenerates `@format` where the payload changed shape, documents objects new this cycle, removes the documentation of withdrawn ones, removes any `inst/PROVENANCE.tsv`, re-roxygenises, and verifies every data object has a man page and no withdrawn object still has one |
 | `05_version_and_news.R` | bumps `Version` and `Date`, prepends a NEWS entry naming the breaking column removals and the withdrawn object |
 | `06_check_and_test.R` | re-pins the expectations the new payload legitimately breaks, adds a regression test for the removed columns, runs both suites |
 
@@ -84,7 +84,7 @@ actually live.
 ### Objects the packages ship that no source produces
 
 Step 2 names every one of them, and each is either kept or withdrawn. Kept means the package's
-existing bytes go into the release untouched — the `assay_codes` re-export. Withdrawn means the
+existing bytes go into the release untouched; none are kept at present. Withdrawn means the
 release ships without it, and step 4 removes its roxygen so no man
 page is left aliasing an object that will not load. An object with no source and no reason is a
 FAIL, because that is indistinguishable from one the build silently dropped.
