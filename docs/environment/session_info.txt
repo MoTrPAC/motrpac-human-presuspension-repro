@@ -1,14 +1,13 @@
 R version:       R version 4.4.1 (2024-06-14)
 Platform:        aarch64-apple-darwin20
 Bioconductor:    3.19
-Packages listed: 436 (118 directly declared, 318 transitive)
-Referenced in source but not installed (may include false positives where a variable was scanned as a package name): BSgenome.Hsapiens.UCSC.hg38, EnsDb.Hsapiens.v86, FactoMineR, ggnetwork, magical, motifmatchr, MotrpacHumanPreSuspension, org.Mm.eg.db, Orthology.eg.db, PMA, TFBSTools
+Packages listed: 341 (70 directly declared, 271 transitive)
+Referenced in source but not installed (may include false positives where a variable was scanned as a package name): file.path, label, Pkg
 
 Declared dependencies per repo:
-  MotrpacHumanPreSuspensionData: 14 (DESCRIPTION)
-  MotrpacHumanPreSuspensionAnalysis: 31 (DESCRIPTION)
-  MotrpacPreSuspensionAcute: 113 (source scan)
-  motrpac-human-presuspension-repro: 36 (source scan)
+  MotrpacHumanPreSuspensionData: 13 (DESCRIPTION)
+  MotrpacHumanPreSuspensionAnalysis: 33 (DESCRIPTION)
+  motrpac-human-presuspension-repro: 57 (source scan)
 
 .libPaths():
   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library
@@ -16,7 +15,7 @@ Declared dependencies per repo:
 sessionInfo():
 R version 4.4.1 (2024-06-14)
 Platform: aarch64-apple-darwin20
-Running under: macOS 26.5.2
+Running under: macOS 26.6.2
 
 Matrix products: default
 BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
