@@ -1,7 +1,7 @@
 id	kind	location	consumed_by	gated	notes
 gcloud_adc	auth	application-default credentials	all gsutil/dl_read_gcp calls	no	gcloud auth application-default login
 production_bucket	bucket	gs://motrpac-data-hub/analysis/human-precovid-sed-adu/c1.3	Stage 2 snapshot; METABOLOMICS_CVS; OUTLIERS	yes	read access; consortium-gated
-staging_bucket	bucket	gs://pre-cawg/staging_20260511	Stage 2 copy/diff/upload; HUMAN_FEATURE_TO_GENE	yes	write access needed
+staging_bucket	bucket	gs://pre-cawg/staging_20260806	Stage 2 copy/diff/upload; HUMAN_FEATURE_TO_GENE	yes	write access needed
 pheno_bucket	bucket	gs://motrpac-data-hub/human-eqc/adult/	Data pheno.R	yes	phenotype DS/DD v8.0
 quant_id_bucket	bucket	gs://motrpac-data-hub/quant-id/human-precovid/v1.0/	Analysis generate_*_qc_norm	yes	raw per-ome quant/metadata
 refmet_api	url	https://www.metabolomicsworkbench.org/databases/refmet/name_to_refmet_new_minID.php	sources/refmet/build_refmet_cache.R	no	provenance only — the metab stem reads the frozen sources/refmet/refmet_name_map.txt; only the builder POSTs here

@@ -11,7 +11,7 @@
 #   Rscript 05_version_and_news.R --manifest <tsv> --out-root <dir> --out <dir> \
 #     --data-version X --analysis-version Y [--release 2.0] [--date YYYY-MM-DD]
 #
-#   --data-version and --analysis-version are REQUIRED and must each be strictly
+#   --data-version and --analysis-version are REQUIRED and must each be at or
 #   ahead of that package's current DESCRIPTION Version. The driver supplies them
 #   from DATA_PKG_VERSION / ANALYSIS_PKG_VERSION in config/pipeline.env.
 
@@ -49,7 +49,7 @@ root <- function(dest) file.path(opt$`out-root`, PKG[[dest]])
 # v2.x data" are the same statement.
 #
 # 2.0.0 is NOT hardcoded here any more, and must not be again. The check below
-# requires the requested version to be strictly ahead of the DESCRIPTION this step
+# requires the requested version to be at or ahead of the DESCRIPTION this step
 # finds, so a constant is correct exactly once: the packages were promoted to 2.0.2
 # and 2.0.4, and the pinned 2.0.0 then failed the stage on every run. The driver
 # passes --data-version/--analysis-version from DATA_PKG_VERSION and
@@ -65,14 +65,9 @@ for (dest in c("data", "analysis")) {
   if (is.null(v) || !nzchar(v))
     stop("missing required option --", dest, "-version; set ",
          toupper(dest), "_PKG_VERSION in config/pipeline.env ",
-         "(it must be strictly ahead of the package's current DESCRIPTION Version)")
+         "(it must be at or ahead of the package's current DESCRIPTION Version)")
 }
 NEW_VERSION <- c(data = opt$`data-version`, analysis = opt$`analysis-version`)
-
-summarise <- function(m) {
-  v <- table(m$verdict)
-  paste(sprintf("%d %s", v, tolower(gsub("-", " ", names(v)))), collapse = ", ")
-}
 
 for (dest in names(PKG)) {
   p <- root(dest)
@@ -155,11 +150,6 @@ for (dest in names(PKG)) {
         "")
     }
   }
-
-  entry <- c(entry, "## Provenance", "",
-    sprintf(paste0("- `inst/PROVENANCE.tsv` records each object as regenerated, staged ",
-                   "verbatim, or carried forward. This payload: %s."), summarise(m)),
-    "")
 
   # Restore NEWS.md from the source checkout first, so re-running this step
   # rewrites its entry rather than finding its own heading and declining to
